@@ -2,8 +2,7 @@ package p_test
 
 import (
 	"aoc/ax"
-	"log"
-	"regexp"
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -12,49 +11,53 @@ import (
 func TestPart(t *testing.T) {
 	lines := ax.MustReadFileLines("input")
 	res := run(lines)
-	require.Equal(t, 15343601, res)
+	require.Equal(t, 55, res)
 }
 
-var prefix = regexp.MustCompile(`^(turn off|turn on|toggle) (\d+),(\d+) through (\d+),(\d+)$`)
-
 func run(lines chan string) int {
-	var brightness [1000][1000]int16
-	for line := range lines {
-		matches := prefix.FindStringSubmatch(line)
-		if len(matches) != 6 {
-			log.Fatalln("invalid number of matches")
-		}
-		action := matches[1]
-		x1 := ax.MustParseInt(matches[2], 10)
-		y1 := ax.MustParseInt(matches[3], 10)
-		x2 := ax.MustParseInt(matches[4], 10)
-		y2 := ax.MustParseInt(matches[5], 10)
-		if x2 < x1 {
-			x1, x2 = x2, x1
-		}
-		if y2 < y1 {
-			y1, y2 = y2, y1
-		}
-		for x := x1; x <= x2; x++ {
-			for y := y1; y <= y2; y++ {
-				switch action {
-				case "turn on":
-					brightness[x][y]++
-				case "turn off":
-					brightness[x][y] = ax.Max16(0, brightness[x][y]-1)
-				case "toggle":
-					brightness[x][y] += 2
-				default:
-					log.Fatalln(action)
-				}
-			}
-		}
-	}
 	var res int
-	for x := 0; x < 1000; x++ {
-		for y := 0; y < 1000; y++ {
-			res += int(brightness[x][y])
+	for line := range lines {
+		if isNice(line) {
+			res++
 		}
 	}
 	return res
+}
+
+func Test_test(t *testing.T) {
+	for _, tc := range []struct {
+		s    string
+		want bool
+	}{
+		{"xxyxx", true},
+		{"qjhvhtzxzqqjkmpb", true},
+		{"uurcxstgmygtbstg", false},
+		{"ieodomkazucvgmuy", false},
+	} {
+		t.Run(fmt.Sprintf("%+v", tc.s), func(t *testing.T) {
+			require.Equal(t, tc.want, isNice(tc.s))
+		})
+	}
+}
+
+func isNice(s string) bool {
+	var weaved bool
+	var doubleTwice bool
+	seen := make(map[string]struct{})
+	for i := range s {
+		if i > 1 {
+			seen[s[i-2:i]] = struct{}{}
+		}
+		if i > 1 && i < len(s)-1 {
+			if _, exists := seen[s[i:i+2]]; exists {
+				doubleTwice = true
+			}
+		}
+		if i > 1 {
+			if s[i-2] == s[i] {
+				weaved = true
+			}
+		}
+	}
+	return weaved && doubleTwice
 }
