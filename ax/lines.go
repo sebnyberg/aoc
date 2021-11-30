@@ -10,3 +10,11 @@ func LinesChan(ss []string) chan string {
 	}()
 	return lines
 }
+
+func LinesFromChan(lines chan string) []string {
+	res := make([]string, 0, 10)
+	for line := range lines {
+		res = append(res, line)
+	}
+	return res
+}
