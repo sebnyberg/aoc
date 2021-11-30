@@ -10,7 +10,7 @@ import (
 func TestPart(t *testing.T) {
 	line := <-ax.MustReadFileLines("input")
 	res := run(line)
-	require.Equal(t, "hepxxyzz", res[0])
+	require.Equal(t, "heqaabcc", res)
 }
 
 func run(line string) string {
@@ -60,6 +60,8 @@ func run(line string) string {
 		return straight && twoPair
 	}
 	pw := []byte(line)
+	for pw = next(pw); !valid(pw); pw = next(pw) {
+	}
 	for pw = next(pw); !valid(pw); pw = next(pw) {
 	}
 	return string(pw)
