@@ -14,7 +14,7 @@ func TestPart(t *testing.T) {
 }
 
 func run() int {
-	input := <-ax.MustReadFileLines("input")
+	input := <-ax.MustReadFineLinesChan("input")
 	floor := 0
 	for _, ch := range input {
 		if ch == '(' {

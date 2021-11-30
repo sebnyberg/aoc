@@ -12,7 +12,7 @@ import (
 )
 
 func TestPart(t *testing.T) {
-	lines := ax.MustReadFileLines("input")
+	lines := ax.MustReadFineLinesChan("input")
 	res := part(lines)
 	require.Equal(t, 9962624, res)
 }

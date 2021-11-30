@@ -10,7 +10,7 @@ import (
 )
 
 func TestPart(t *testing.T) {
-	input := <-ax.MustReadFileLines("input")
+	input := <-ax.MustReadFineLinesChan("input")
 	for i, tc := range []struct {
 		jsonInput string
 		want      int

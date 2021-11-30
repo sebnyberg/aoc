@@ -8,7 +8,7 @@ import (
 )
 
 func TestPart(t *testing.T) {
-	line := <-ax.MustReadFileLines("input")
+	line := <-ax.MustReadFineLinesChan("input")
 	res := run(line)
 	require.Equal(t, "heqaabcc", res)
 }
