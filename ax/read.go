@@ -7,12 +7,17 @@ import (
 	"os"
 )
 
+// MustReadFileLinesChan reads lines from the provided file and puts them into
+// the returned channel. If there is an error, it is logged followed by
+// os.Exit(1).
 func MustReadFineLinesChan(path string) chan string {
 	f, err := os.OpenFile(path, os.O_RDONLY, 0644)
 	Check(err, fmt.Sprintf("open file at %q", path))
 	return ReadLinesChan(f)
 }
 
+// ReadLinesChan reads lines from the provided io.ReadCloser and puts them into
+// the returned channel.
 func ReadLinesChan(f io.ReadCloser) chan string {
 	res := make(chan string)
 	go func() {
@@ -26,12 +31,16 @@ func ReadLinesChan(f io.ReadCloser) chan string {
 	return res
 }
 
+// ReadFileLines reads lines from the provided file and puts them into a slice
+// of strings. If there is an error, it is logged followed by os.Exit(1).
 func MustReadFineLines(path string) []string {
 	f, err := os.OpenFile(path, os.O_RDONLY, 0644)
 	Check(err, fmt.Sprintf("open file at %q", path))
 	return ReadLines(f)
 }
 
+// ReadLines reads lines from the provided io.ReadCloser, putting them into a
+// slice of strings.
 func ReadLines(f io.ReadCloser) []string {
 	res := make([]string, 0)
 	defer f.Close()
