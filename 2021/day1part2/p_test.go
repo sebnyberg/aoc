@@ -13,8 +13,8 @@ func TestPart(t *testing.T) {
 		fname string
 		want  int
 	}{
-		{"small", 7},
-		{"input", 1292},
+		{"small", 5},
+		{"input", 1262},
 	} {
 		t.Run(fmt.Sprintf("%+v", i), func(t *testing.T) {
 			lines := ax.MustReadFineLines(tc.fname)
@@ -29,10 +29,16 @@ func run(lines []string) int {
 		lineInts[i] = ax.MustParseInt(lines[i], 10)
 	}
 	var count int
-	for i := 1; i < len(lineInts); i++ {
-		if lineInts[i-1] < lineInts[i] {
-			count++
+	var cur, prev int
+	for i := 0; i < len(lineInts); i++ {
+		cur += lineInts[i]
+		if i > 2 {
+			cur -= lineInts[i-3]
+			if prev < cur {
+				count++
+			}
 		}
+		prev = cur
 	}
 	return count
 }
