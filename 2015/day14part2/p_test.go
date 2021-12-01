@@ -37,9 +37,9 @@ func run(lines []string, time int) int {
 		parts := pat.FindStringSubmatch(line)
 		// Name SHOULD matter but it doesn't :(
 		// name := parts[1]
-		speed := ax.MustParseInt(parts[2], 10)
-		duration := ax.MustParseInt(parts[3], 10)
-		restTime := ax.MustParseInt(parts[4], 10)
+		speed := ax.MustParseIntBase(parts[2], 10)
+		duration := ax.MustParseIntBase(parts[3], 10)
+		restTime := ax.MustParseIntBase(parts[4], 10)
 		period := duration + restTime
 		var dist int
 		if time > period {

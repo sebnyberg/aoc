@@ -44,7 +44,7 @@ func run(lines chan string) int {
 		case load.MatchString(line):
 			parts := load.FindStringSubmatch(line)
 			eval[parts[2]] = cached(parts[2], func() int {
-				return ax.MustParseInt(parts[1], 10)
+				return ax.MustParseIntBase(parts[1], 10)
 			})
 		case loadVar.MatchString(line):
 			parts := loadVar.FindStringSubmatch(line)
@@ -64,12 +64,12 @@ func run(lines chan string) int {
 				if onlyLetters(xStr) {
 					xVal = eval[xStr]()
 				} else {
-					xVal = ax.MustParseInt(xStr, 10)
+					xVal = ax.MustParseIntBase(xStr, 10)
 				}
 				if onlyLetters(yStr) {
 					yVal = eval[yStr]()
 				} else {
-					yVal = ax.MustParseInt(yStr, 10)
+					yVal = ax.MustParseIntBase(yStr, 10)
 				}
 				var res int
 				switch parts[2] {
