@@ -24,6 +24,14 @@ func TestPart(t *testing.T) {
 	}
 }
 
+func BenchmarkTest(b *testing.B) {
+	lines := ax.MustReadFineLines("input")
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		run(lines)
+	}
+}
+
 const boardSize = 5
 
 func run(lines []string) int {
