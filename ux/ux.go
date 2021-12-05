@@ -31,6 +31,16 @@ func Sum[T constraints.Ordered](a []T) T {
 	return sum
 }
 
+func SumIf[T constraints.Ordered](a []T, f func(T) bool) T {
+	var sum T
+	for _, item := range a {
+		if f(item) {
+			sum += item
+		}
+	}
+	return sum
+}
+
 func SumMatrix[T constraints.Ordered](a [][]T) T {
 	var sum T
 	for i := range a {
@@ -41,21 +51,33 @@ func SumMatrix[T constraints.Ordered](a [][]T) T {
 	return sum
 }
 
-func Count[T any](a []T, f func(b T) bool) int {
+func SumMatrixIf[T constraints.Ordered](a [][]T, f func(int, int, T) bool) T {
+	var sum T
+	for i := range a {
+		for j, item := range a[i] {
+			if f(i, j, item) {
+				sum += item
+			}
+		}
+	}
+	return sum
+}
+
+func CountIf[T any](a []T, f func(int, T) bool) int {
 	var count int
-	for _, el := range a {
-		if f(el) {
+	for i, el := range a {
+		if f(i, el) {
 			count++
 		}
 	}
 	return count
 }
 
-func CountMatrix[T any](a [][]T, f func(b T) bool) int {
+func CountMatrixIf[T any](a [][]T, f func(int, int, T) bool) int {
 	var count int
 	for i := range a {
-		for _, el := range a[i] {
-			if f(el) {
+		for j, el := range a[i] {
+			if f(i, j, el) {
 				count++
 			}
 		}

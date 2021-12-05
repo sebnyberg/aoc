@@ -53,7 +53,7 @@ func run(rows []string) int {
 		if dx != dy && dx != 0 && dy != 0 {
 			continue
 		}
-		delta := max(dx, dy)
+		delta := ux.Max(dx, dy)
 		for i := 0; i <= delta; i++ {
 			visit(x1, y1)
 			x1 += dirX
@@ -62,11 +62,4 @@ func run(rows []string) int {
 	}
 
 	return count
-}
-
-func max(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
 }
