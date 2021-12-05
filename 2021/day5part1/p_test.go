@@ -24,10 +24,18 @@ func TestPart(t *testing.T) {
 	}
 }
 
+func BenchmarkRun(b *testing.B) {
+	input := ax.MustReadFineLines("input")
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		run(input)
+	}
+}
+
 var pat = regexp.MustCompile(`^(\d+),(\d+) -> (\d+),(\d+)`)
 
 func run(rows []string) int {
-	var grid [1001][1001]int
+	var grid [1001][1001]uint16
 	var count int
 	visit := func(x, y int) {
 		grid[y][x]++
@@ -53,7 +61,7 @@ func run(rows []string) int {
 		if dx != 0 && dy != 0 {
 			continue
 		}
-		delta := max(dx, dy)
+		delta := ax.Max(dx, dy)
 		for i := 0; i <= delta; i++ {
 			visit(x1, y1)
 			x1 += dirX
@@ -62,11 +70,4 @@ func run(rows []string) int {
 	}
 
 	return count
-}
-
-func max(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
 }

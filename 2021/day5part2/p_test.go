@@ -27,7 +27,7 @@ func TestPart(t *testing.T) {
 var pat = regexp.MustCompile(`^(\d+),(\d+) -> (\d+),(\d+)`)
 
 func run(rows []string) int {
-	var grid [1001][1001]int
+	var grid [1001][1001]uint16
 	var count int
 	visit := func(x, y int) {
 		grid[y][x]++
@@ -50,13 +50,14 @@ func run(rows []string) int {
 		x2, y2 := ax.MustParseInt(parts[3]), ax.MustParseInt(parts[4])
 		dx, dy := ax.Abs(x2-x1), ax.Abs(y2-y1)
 		dirX, dirY := dir(x1, x2), dir(y1, y2)
-		if dx == dy || dx == 0 || dy == 0 {
-			delta := max(dx, dy)
-			for i := 0; i <= delta; i++ {
-				visit(x1, y1)
-				x1 += dirX
-				y1 += dirY
-			}
+		if dx != dy && dx != 0 && dy != 0 {
+			continue
+		}
+		delta := max(dx, dy)
+		for i := 0; i <= delta; i++ {
+			visit(x1, y1)
+			x1 += dirX
+			y1 += dirY
 		}
 	}
 

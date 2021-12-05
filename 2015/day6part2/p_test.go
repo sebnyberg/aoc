@@ -41,7 +41,7 @@ func run(lines chan string) int {
 				case "turn on":
 					brightness[x][y]++
 				case "turn off":
-					brightness[x][y] = ax.Max16(0, brightness[x][y]-1)
+					brightness[x][y] = ax.MaxInt16(0, brightness[x][y]-1)
 				case "toggle":
 					brightness[x][y] += 2
 				default:

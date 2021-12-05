@@ -27,9 +27,9 @@ func Max(a, b int) int {
 	return b
 }
 
-// Max16 returns the maximum value of the two input values, or the first value
+// MaxInt16 returns the maximum value of the two input values, or the first value
 // if the values are equal.
-func Max16(a, b int16) int16 {
+func MaxInt16(a, b int16) int16 {
 	if a >= b {
 		return a
 	}
@@ -37,6 +37,13 @@ func Max16(a, b int16) int16 {
 }
 
 func Abs(a int) int {
+	if a < 0 {
+		return -a
+	}
+	return a
+}
+
+func AbsInt16(a int16) int16 {
 	if a < 0 {
 		return -a
 	}
