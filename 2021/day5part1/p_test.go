@@ -30,10 +30,10 @@ func run(rows []string) int {
 	var grid [1001][1001]int
 	var count int
 	visit := func(x, y int) {
-		if grid[y][x] == 1 {
+		grid[y][x]++
+		if grid[y][x] == 2 {
 			count++
 		}
-		grid[y][x]++
 	}
 	dir := func(a, b int) int {
 		if a < b {
