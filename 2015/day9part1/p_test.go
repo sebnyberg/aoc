@@ -1,7 +1,7 @@
 package p_test
 
 import (
-	"aoc/ax"
+	"aoc/ux"
 	"math"
 	"regexp"
 	"testing"
@@ -10,7 +10,7 @@ import (
 )
 
 func TestPart(t *testing.T) {
-	lines := ax.MustReadFineLinesChan("input")
+	lines := ux.MustReadFineLinesChan("input")
 	res := run(lines)
 	require.Equal(t, 117, res)
 }
@@ -33,7 +33,7 @@ func run(lines chan string) int {
 		parts := linePat.FindStringSubmatch(line)
 		from := parts[1]
 		to := parts[2]
-		dist := ax.MustParseIntBase(parts[3], 10)
+		dist := ux.MustParseIntBase(parts[3], 10)
 		if _, exists := nameToIdx[from]; !exists {
 			nameToIdx[from] = len(names)
 			names = append(names, from)
@@ -52,7 +52,7 @@ func run(lines chan string) int {
 	// Perform DFS to find the shortest distance that visits all places
 	res := math.MaxInt32
 	for i := 0; i < len(adj); i++ {
-		res = ax.Min(res, dfs(adj, 0, 0, 0, len(adj)-1))
+		res = ux.Min(res, dfs(adj, 0, 0, 0, len(adj)-1))
 	}
 	return res
 }
@@ -66,7 +66,7 @@ func dfs(adj [][]edge, visited, dist, pos, remains int) int {
 		if visited&(1<<near.target) > 0 {
 			continue
 		}
-		res = ax.Min(res, dfs(adj, visited|(1<<near.target), dist+near.dist, near.target, remains-1))
+		res = ux.Min(res, dfs(adj, visited|(1<<near.target), dist+near.dist, near.target, remains-1))
 	}
 	return res
 }

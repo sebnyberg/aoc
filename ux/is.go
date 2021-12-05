@@ -1,4 +1,4 @@
-package ax
+package ux
 
 // Is checks whether all runes return true when passed through the provided
 // function. For function examples, see the unicode package, e.g.

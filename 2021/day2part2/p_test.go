@@ -1,7 +1,7 @@
 package p_test
 
 import (
-	"aoc/ax"
+	"aoc/ux"
 	"fmt"
 	"regexp"
 	"testing"
@@ -18,7 +18,7 @@ func TestPart(t *testing.T) {
 		{"input", 1592426537},
 	} {
 		t.Run(fmt.Sprintf("%+v", i), func(t *testing.T) {
-			lines := ax.MustReadFineLines(tc.fname)
+			lines := ux.MustReadFineLines(tc.fname)
 			require.Equal(t, tc.want, run(lines))
 		})
 	}
@@ -31,7 +31,7 @@ func run(lines []string) int {
 	for _, line := range lines {
 		parts := pat.FindStringSubmatch(line)
 		dir := parts[1]
-		val := ax.MustParseInt(parts[2])
+		val := ux.MustParseInt(parts[2])
 		switch dir {
 		case "forward":
 			horz += val

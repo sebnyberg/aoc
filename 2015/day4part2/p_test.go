@@ -1,7 +1,7 @@
 package p_test
 
 import (
-	"aoc/ax"
+	"aoc/ux"
 	"crypto/md5"
 	"encoding/hex"
 	"strconv"
@@ -12,7 +12,7 @@ import (
 )
 
 func TestPart(t *testing.T) {
-	lines := ax.MustReadFineLinesChan("input")
+	lines := ux.MustReadFineLinesChan("input")
 	res := part(lines)
 	require.Equal(t, 9962624, res)
 }

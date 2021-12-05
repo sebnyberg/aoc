@@ -1,7 +1,7 @@
 package p_test
 
 import (
-	"aoc/ax"
+	"aoc/ux"
 	"fmt"
 	"testing"
 
@@ -17,7 +17,7 @@ func TestPart(t *testing.T) {
 		{"input", 1292},
 	} {
 		t.Run(fmt.Sprintf("%+v", i), func(t *testing.T) {
-			lines := ax.MustReadFineLines(tc.fname)
+			lines := ux.MustReadFineLines(tc.fname)
 			require.Equal(t, tc.want, run(lines))
 		})
 	}
@@ -26,7 +26,7 @@ func TestPart(t *testing.T) {
 func run(lines []string) int {
 	lineInts := make([]int, len(lines))
 	for i := range lines {
-		lineInts[i] = ax.MustParseIntBase(lines[i], 10)
+		lineInts[i] = ux.MustParseIntBase(lines[i], 10)
 	}
 	var count int
 	for i := 1; i < len(lineInts); i++ {

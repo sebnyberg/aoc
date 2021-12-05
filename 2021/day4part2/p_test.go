@@ -1,7 +1,7 @@
 package p_test
 
 import (
-	"aoc/ax"
+	"aoc/ux"
 	"fmt"
 	"strings"
 	"testing"
@@ -18,7 +18,7 @@ func TestPart(t *testing.T) {
 		{"input", 4624},
 	} {
 		t.Run(fmt.Sprintf("%+v", i), func(t *testing.T) {
-			lines := ax.MustReadFineLines(tc.fname)
+			lines := ux.MustReadFineLines(tc.fname)
 			require.Equal(t, tc.want, run(lines))
 		})
 	}
@@ -31,7 +31,7 @@ func run(lines []string) int {
 	numsLine := strings.Split(lines[0], ",")
 	nums := make([]int, len(numsLine))
 	for i, numStr := range numsLine {
-		nums[i] = ax.MustParseInt(numStr)
+		nums[i] = ux.MustParseInt(numStr)
 	}
 
 	// Parse boards
@@ -50,7 +50,7 @@ func run(lines []string) int {
 			vals[i][row] = make([]int, boardSize)
 			lineIdx := i*6 + 1 + row
 			for col, valStr := range strings.Fields(lines[lineIdx]) {
-				val := ax.MustParseInt(valStr)
+				val := ux.MustParseInt(valStr)
 				pos[i][val] = [2]int{row, col}
 				vals[i][row][col] = val
 			}

@@ -1,7 +1,7 @@
 package p_test
 
 import (
-	"aoc/ax"
+	"aoc/ux"
 	"fmt"
 	"regexp"
 	"testing"
@@ -18,14 +18,14 @@ func TestPart(t *testing.T) {
 		{"input", 5092},
 	} {
 		t.Run(fmt.Sprintf("%+v", i), func(t *testing.T) {
-			lines := ax.MustReadFineLines(tc.fname)
+			lines := ux.MustReadFineLines(tc.fname)
 			require.Equal(t, tc.want, run(lines))
 		})
 	}
 }
 
 func BenchmarkRun(b *testing.B) {
-	input := ax.MustReadFineLines("input")
+	input := ux.MustReadFineLines("input")
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		run(input)
@@ -54,14 +54,14 @@ func run(rows []string) int {
 
 	for _, row := range rows {
 		parts := pat.FindStringSubmatch(row)
-		x1, y1 := ax.MustParseInt(parts[1]), ax.MustParseInt(parts[2])
-		x2, y2 := ax.MustParseInt(parts[3]), ax.MustParseInt(parts[4])
-		dx, dy := ax.Abs(x2-x1), ax.Abs(y2-y1)
+		x1, y1 := ux.MustParseInt(parts[1]), ux.MustParseInt(parts[2])
+		x2, y2 := ux.MustParseInt(parts[3]), ux.MustParseInt(parts[4])
+		dx, dy := ux.Abs(x2-x1), ux.Abs(y2-y1)
 		dirX, dirY := dir(x1, x2), dir(y1, y2)
 		if dx != 0 && dy != 0 {
 			continue
 		}
-		delta := ax.Max(dx, dy)
+		delta := ux.Max(dx, dy)
 		for i := 0; i <= delta; i++ {
 			visit(x1, y1)
 			x1 += dirX

@@ -1,7 +1,7 @@
 package p_test
 
 import (
-	"aoc/ax"
+	"aoc/ux"
 	"fmt"
 	"regexp"
 	"testing"
@@ -20,7 +20,7 @@ func TestPart(t *testing.T) {
 		{"input", 2503, 601},
 	} {
 		t.Run(fmt.Sprintf("%+v", i), func(t *testing.T) {
-			lines := ax.MustReadFineLines(tc.fname)
+			lines := ux.MustReadFineLines(tc.fname)
 			require.Equal(t, tc.want, run(lines, tc.time))
 		})
 	}
@@ -33,9 +33,9 @@ func run(lines []string, time int) int {
 	periods := make([]int, len(lines))
 	for i, line := range lines {
 		parts := pat.FindStringSubmatch(line)
-		speed := ax.MustParseIntBase(parts[2], 10)
-		duration := ax.MustParseIntBase(parts[3], 10)
-		restTime := ax.MustParseIntBase(parts[4], 10)
+		speed := ux.MustParseIntBase(parts[2], 10)
+		duration := ux.MustParseIntBase(parts[3], 10)
+		restTime := ux.MustParseIntBase(parts[4], 10)
 		period := duration + restTime
 		periods[i] = period
 		deltas[i] = make([]int8, period)
@@ -50,7 +50,7 @@ func run(lines []string, time int) int {
 		var maxPos int
 		for reindeer, delta := range deltas {
 			positions[reindeer] += int(delta[t%periods[reindeer]])
-			maxPos = ax.Max(maxPos, positions[reindeer])
+			maxPos = ux.Max(maxPos, positions[reindeer])
 		}
 		for reindeer, pos := range positions {
 			if pos == maxPos {
@@ -60,7 +60,7 @@ func run(lines []string, time int) int {
 	}
 	var maxPoints int
 	for _, p := range points {
-		maxPoints = ax.Max(maxPoints, p)
+		maxPoints = ux.Max(maxPoints, p)
 	}
 
 	return maxPoints

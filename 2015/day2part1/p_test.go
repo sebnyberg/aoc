@@ -1,7 +1,7 @@
 package p_test
 
 import (
-	"aoc/ax"
+	"aoc/ux"
 	"fmt"
 	"testing"
 
@@ -9,7 +9,7 @@ import (
 )
 
 func TestPart(t *testing.T) {
-	lines := ax.MustReadFineLinesChan("input")
+	lines := ux.MustReadFineLinesChan("input")
 	res := run(lines)
 	require.Equal(t, 1586300, res)
 }
@@ -23,7 +23,7 @@ func run(lines chan string) int {
 			panic("invalid line")
 		}
 		area := 2*l*w + 2*w*h + 2*h*l
-		area += ax.Min(l*w, ax.Min(w*h, h*l))
+		area += ux.Min(l*w, ux.Min(w*h, h*l))
 		res += area
 	}
 	return res

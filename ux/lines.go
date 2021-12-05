@@ -1,4 +1,4 @@
-package ax
+package ux
 
 // LinesChan reads from a slice of strings into the returned channel.
 func LinesChan(ss []string) chan string {

@@ -1,7 +1,7 @@
 package p_test
 
 import (
-	"aoc/ax"
+	"aoc/ux"
 	"encoding/json"
 	"fmt"
 	"testing"
@@ -10,7 +10,7 @@ import (
 )
 
 func TestPart(t *testing.T) {
-	input := <-ax.MustReadFineLinesChan("input")
+	input := <-ux.MustReadFineLinesChan("input")
 	for i, tc := range []struct {
 		jsonInput string
 		want      int
@@ -29,7 +29,7 @@ func TestPart(t *testing.T) {
 func run(line string) int {
 	var obj interface{}
 	lineBytes := []byte(line)
-	ax.Check(json.Unmarshal(lineBytes, &obj), "unmarshal err")
+	ux.Check(json.Unmarshal(lineBytes, &obj), "unmarshal err")
 	sum := visit(obj)
 	return sum
 }
