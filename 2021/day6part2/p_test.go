@@ -24,6 +24,14 @@ func TestPart(t *testing.T) {
 	}
 }
 
+func BenchmarkPart(b *testing.B) {
+	input := ux.MustReadFineLines("input")
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		run(input, 256)
+	}
+}
+
 func run(rows []string, ndays int) int {
 	var fishCount [9]int
 	for _, valStr := range strings.Split(rows[0], ",") {

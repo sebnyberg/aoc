@@ -32,29 +32,6 @@ func BenchmarkRun(b *testing.B) {
 	}
 }
 
-var aRes, bRes int
-
-func BenchmarkThing(b *testing.B) {
-	for i := 0; i < b.N; i++ {
-		for j := 0; j < 1000; j++ {
-			aRes = (*a())
-			bRes = (*c())
-		}
-	}
-}
-
-//go:noinline
-func a() *int {
-	res := 1
-	return &res
-}
-
-//go:noinline
-func c() *int {
-	res := 1
-	return &res
-}
-
 var pat = regexp.MustCompile(`^(\d+),(\d+) -> (\d+),(\d+)`)
 
 func run(rows []string) int {
