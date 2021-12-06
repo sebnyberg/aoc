@@ -1,6 +1,7 @@
 package p_test
 
 import (
+	"aoc/ax"
 	"fmt"
 	"strings"
 	"testing"
@@ -30,7 +31,7 @@ func run(rows []string) int {
 		fishCount[val]++
 	}
 	var nextCount [9]int
-	for day := 0; day <= 80; day++ {
+	for day := 0; day < 80; day++ {
 		for i := 0; i < 8; i++ {
 			nextCount[i] = fishCount[(i+1)%9]
 		}
