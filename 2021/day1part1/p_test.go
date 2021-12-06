@@ -26,7 +26,7 @@ func TestPart(t *testing.T) {
 func run(lines []string) int {
 	lineInts := make([]int, len(lines))
 	for i := range lines {
-		lineInts[i] = ax.MustParseIntBase(lines[i], 10)
+		lineInts[i] = ax.MustParseIntBase[int](lines[i], 10)
 	}
 	var count int
 	for i := 1; i < len(lineInts); i++ {

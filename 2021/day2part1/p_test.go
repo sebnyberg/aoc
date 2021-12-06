@@ -31,7 +31,7 @@ func run(lines []string) int {
 	for _, line := range lines {
 		parts := pat.FindStringSubmatch(line)
 		dir := parts[1]
-		val := ax.MustParseInt[int]parts[2])
+		val := ax.MustParseInt[int](parts[2])
 		switch dir {
 		case "forward":
 			horz += val

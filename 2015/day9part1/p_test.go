@@ -33,7 +33,7 @@ func run(lines chan string) int {
 		parts := linePat.FindStringSubmatch(line)
 		from := parts[1]
 		to := parts[2]
-		dist := ax.MustParseIntBase(parts[3], 10)
+		dist := ax.MustParseIntBase[int](parts[3], 10)
 		if _, exists := nameToIdx[from]; !exists {
 			nameToIdx[from] = len(names)
 			names = append(names, from)

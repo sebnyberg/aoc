@@ -19,7 +19,7 @@ var digitPat = regexp.MustCompile(`([-]?\d+)`)
 func run(line string) int {
 	var sum int
 	for _, match := range digitPat.FindAllString(line, -1) {
-		sum += ax.MustParseIntBase(match, 10)
+		sum += ax.MustParseIntBase[int](match, 10)
 	}
 	return sum
 }
