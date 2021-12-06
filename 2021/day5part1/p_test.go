@@ -1,4 +1,4 @@
-package p_test
+package day5part1
 
 import (
 	"aoc/ux"
@@ -30,6 +30,29 @@ func BenchmarkRun(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		run(input)
 	}
+}
+
+var aRes, bRes int
+
+func BenchmarkThing(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		for j := 0; j < 1000; j++ {
+			aRes = (*a())
+			bRes = (*c())
+		}
+	}
+}
+
+//go:noinline
+func a() *int {
+	res := 1
+	return &res
+}
+
+//go:noinline
+func c() *int {
+	res := 1
+	return &res
 }
 
 var pat = regexp.MustCompile(`^(\d+),(\d+) -> (\d+),(\d+)`)

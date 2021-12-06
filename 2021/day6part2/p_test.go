@@ -14,24 +14,24 @@ func TestPart(t *testing.T) {
 		fname string
 		want  int
 	}{
-		{"small", 5934},
-		{"input", 395627},
+		{"small", 26984457539},
+		{"input", 1767323539209},
 	} {
 		t.Run(fmt.Sprintf("%+v", i), func(t *testing.T) {
 			lines := ux.MustReadFineLines(tc.fname)
-			require.Equal(t, tc.want, run(lines))
+			require.Equal(t, tc.want, run(lines, 256))
 		})
 	}
 }
 
-func run(rows []string) int {
+func run(rows []string, ndays int) int {
 	var fishCount [9]int
 	for _, valStr := range strings.Split(rows[0], ",") {
 		val := ux.MustParseInt(valStr)
 		fishCount[val]++
 	}
 	var nextCount [9]int
-	for day := 0; day <= 80; day++ {
+	for day := 0; day <= ndays; day++ {
 		for i := 0; i < 8; i++ {
 			nextCount[i] = fishCount[(i+1)%9]
 		}
@@ -39,6 +39,9 @@ func run(rows []string) int {
 		nextCount[8] = fishCount[0]
 		nextCount, fishCount = fishCount, nextCount
 	}
-	res := ux.Sum(nextCount[:])
-	return res
+	var sum int
+	for _, count := range nextCount {
+		sum += count
+	}
+	return sum
 }
