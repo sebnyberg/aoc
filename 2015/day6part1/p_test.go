@@ -1,7 +1,6 @@
 package p_test
 
 import (
-	"aoc/ux"
 	"log"
 	"regexp"
 	"testing"
@@ -10,7 +9,7 @@ import (
 )
 
 func TestPart(t *testing.T) {
-	lines := ux.MustReadFineLinesChan("input")
+	lines := ax.MustReadFineLinesChan("input")
 	res := run(lines)
 	require.Equal(t, 400410, res)
 }
@@ -25,10 +24,10 @@ func run(lines chan string) int {
 			log.Fatalln("invalid number of matches")
 		}
 		action := matches[1]
-		x1 := ux.MustParseIntBase(matches[2], 10)
-		y1 := ux.MustParseIntBase(matches[3], 10)
-		x2 := ux.MustParseIntBase(matches[4], 10)
-		y2 := ux.MustParseIntBase(matches[5], 10)
+		x1 := ax.MustParseIntBase(matches[2], 10)
+		y1 := ax.MustParseIntBase(matches[3], 10)
+		x2 := ax.MustParseIntBase(matches[4], 10)
+		y2 := ax.MustParseIntBase(matches[5], 10)
 		if x2 < x1 {
 			x1, x2 = x2, x1
 		}

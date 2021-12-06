@@ -1,7 +1,6 @@
 package p_test
 
 import (
-	"aoc/ux"
 	"fmt"
 	"regexp"
 	"testing"
@@ -17,7 +16,7 @@ func TestPart(t *testing.T) {
 		{"input", 601},
 	} {
 		t.Run(fmt.Sprintf("%+v", i), func(t *testing.T) {
-			lines := ux.MustReadFineLines(tc.fname)
+			lines := ax.MustReadFineLines(tc.fname)
 			require.Equal(t, tc.want, run(lines))
 		})
 	}
@@ -45,7 +44,7 @@ func run(lines []string) int {
 		if parts[2] == "lose" {
 			sign = -1
 		}
-		v := ux.MustParseIntBase(parts[3], 10)
+		v := ax.MustParseIntBase(parts[3], 10)
 		i, j := personIdx[a], personIdx[b]
 		preferences = append(preferences, []int{i, j, sign * v})
 	}
@@ -77,7 +76,7 @@ type maxHappinessFinder struct {
 func (f *maxHappinessFinder) findMaxHappiness(seating []int, pos, visited, n int) {
 	if pos == n {
 		result := calculateHappiness(f.happiness, seating)
-		f.maxHappiness = ux.Max(f.maxHappiness, result)
+		f.maxHappiness = ax.Max(f.maxHappiness, result)
 	}
 	for i := 0; i < n; i++ {
 		if visited&(1<<i) > 0 {

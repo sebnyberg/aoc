@@ -1,7 +1,6 @@
 package p_test
 
 import (
-	"aoc/ux"
 	"fmt"
 	"testing"
 
@@ -9,7 +8,7 @@ import (
 )
 
 func TestPart(t *testing.T) {
-	lines := ux.MustReadFineLinesChan("input")
+	lines := ax.MustReadFineLinesChan("input")
 	res := run(lines)
 	require.Equal(t, 3737498, res)
 }
@@ -22,7 +21,7 @@ func run(lines chan string) int {
 		if l == 0 || w == 0 || h == 0 {
 			panic("invalid line")
 		}
-		ribbonLen := 2 * ux.Min(l+w, ux.Min(w+h, h+l))
+		ribbonLen := 2 * ax.Min(l+w, ax.Min(w+h, h+l))
 		volume := l * w * h
 		res += ribbonLen + volume
 	}

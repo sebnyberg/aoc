@@ -1,7 +1,6 @@
 package p_test
 
 import (
-	"aoc/ux"
 	"fmt"
 	"regexp"
 	"testing"
@@ -23,7 +22,7 @@ func TestPart(t *testing.T) {
 		{"input", 2503, 601},
 	} {
 		t.Run(fmt.Sprintf("%+v", i), func(t *testing.T) {
-			lines := ux.MustReadFineLines(tc.fname)
+			lines := ax.MustReadFineLines(tc.fname)
 			require.Equal(t, tc.want, run(lines, tc.time))
 		})
 	}
@@ -37,9 +36,9 @@ func run(lines []string, time int) int {
 		parts := pat.FindStringSubmatch(line)
 		// Name SHOULD matter but it doesn't :(
 		// name := parts[1]
-		speed := ux.MustParseIntBase(parts[2], 10)
-		duration := ux.MustParseIntBase(parts[3], 10)
-		restTime := ux.MustParseIntBase(parts[4], 10)
+		speed := ax.MustParseIntBase(parts[2], 10)
+		duration := ax.MustParseIntBase(parts[3], 10)
+		restTime := ax.MustParseIntBase(parts[4], 10)
 		period := duration + restTime
 		var dist int
 		if time > period {
@@ -51,7 +50,7 @@ func run(lines []string, time int) int {
 		} else {
 			dist += speed * duration
 		}
-		maxDist = ux.Max(maxDist, dist)
+		maxDist = ax.Max(maxDist, dist)
 	}
 
 	return maxDist

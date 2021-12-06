@@ -1,7 +1,6 @@
 package p_test
 
 import (
-	"aoc/ux"
 	"log"
 	"testing"
 
@@ -14,7 +13,7 @@ func TestPart(t *testing.T) {
 }
 
 func run() int {
-	input := <-ux.MustReadFineLinesChan("input")
+	input := <-ax.MustReadFineLinesChan("input")
 	floor := 0
 	for _, ch := range input {
 		if ch == '(' {

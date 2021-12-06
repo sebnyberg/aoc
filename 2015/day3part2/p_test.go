@@ -1,14 +1,13 @@
 package p_test
 
 import (
-	"aoc/ux"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 )
 
 func TestPart(t *testing.T) {
-	lines := ux.MustReadFineLinesChan("input")
+	lines := ax.MustReadFineLinesChan("input")
 	res := run(lines)
 	require.Equal(t, 2631, res)
 }

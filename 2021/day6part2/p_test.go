@@ -1,7 +1,6 @@
 package p_test
 
 import (
-	"aoc/ux"
 	"fmt"
 	"strings"
 	"testing"
@@ -18,14 +17,14 @@ func TestPart(t *testing.T) {
 		{"input", 1767323539209},
 	} {
 		t.Run(fmt.Sprintf("%+v", i), func(t *testing.T) {
-			lines := ux.MustReadFineLines(tc.fname)
+			lines := ax.MustReadFineLines(tc.fname)
 			require.Equal(t, tc.want, run(lines, 256))
 		})
 	}
 }
 
 func BenchmarkPart(b *testing.B) {
-	input := ux.MustReadFineLines("input")
+	input := ax.MustReadFineLines("input")
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		run(input, 256)
@@ -35,7 +34,7 @@ func BenchmarkPart(b *testing.B) {
 func run(rows []string, ndays int) int {
 	var fishCount [9]int
 	for _, valStr := range strings.Split(rows[0], ",") {
-		val := ux.MustParseInt(valStr)
+		val := ax.MustParseInt(valStr)
 		fishCount[val]++
 	}
 	var nextCount [9]int

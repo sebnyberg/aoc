@@ -1,7 +1,6 @@
 package p_test
 
 import (
-	"aoc/ux"
 	"fmt"
 	"regexp"
 	"testing"
@@ -18,7 +17,7 @@ func TestPart(t *testing.T) {
 		{"input", 20484},
 	} {
 		t.Run(fmt.Sprintf("%+v", i), func(t *testing.T) {
-			lines := ux.MustReadFineLines(tc.fname)
+			lines := ax.MustReadFineLines(tc.fname)
 			require.Equal(t, tc.want, run(lines))
 		})
 	}
@@ -46,14 +45,14 @@ func run(rows []string) int {
 
 	for _, row := range rows {
 		parts := pat.FindStringSubmatch(row)
-		x1, y1 := ux.MustParseInt(parts[1]), ux.MustParseInt(parts[2])
-		x2, y2 := ux.MustParseInt(parts[3]), ux.MustParseInt(parts[4])
-		dx, dy := ux.Abs(x2-x1), ux.Abs(y2-y1)
+		x1, y1 := ax.MustParseInt(parts[1]), ax.MustParseInt(parts[2])
+		x2, y2 := ax.MustParseInt(parts[3]), ax.MustParseInt(parts[4])
+		dx, dy := ax.Abs(x2-x1), ax.Abs(y2-y1)
 		dirX, dirY := dir(x1, x2), dir(y1, y2)
 		if dx != dy && dx != 0 && dy != 0 {
 			continue
 		}
-		delta := ux.Max(dx, dy)
+		delta := ax.Max(dx, dy)
 		for i := 0; i <= delta; i++ {
 			visit(x1, y1)
 			x1 += dirX

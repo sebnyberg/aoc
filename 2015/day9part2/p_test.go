@@ -1,7 +1,6 @@
 package p_test
 
 import (
-	"aoc/ux"
 	"regexp"
 	"testing"
 
@@ -9,7 +8,7 @@ import (
 )
 
 func TestPart(t *testing.T) {
-	lines := ux.MustReadFineLinesChan("input")
+	lines := ax.MustReadFineLinesChan("input")
 	res := run(lines)
 	require.Equal(t, 909, res)
 }
@@ -32,7 +31,7 @@ func run(lines chan string) int {
 		parts := linePat.FindStringSubmatch(line)
 		from := parts[1]
 		to := parts[2]
-		dist := ux.MustParseIntBase(parts[3], 10)
+		dist := ax.MustParseIntBase(parts[3], 10)
 		if _, exists := nameToIdx[from]; !exists {
 			nameToIdx[from] = len(names)
 			names = append(names, from)
@@ -62,7 +61,7 @@ type maxDistFinder struct {
 
 func (f *maxDistFinder) dfs(adj [][]edge, visited, dist, pos, remains int) {
 	if remains == 0 {
-		f.maxDist = ux.Max(f.maxDist, dist)
+		f.maxDist = ax.Max(f.maxDist, dist)
 	}
 	for _, near := range adj[pos] {
 		if visited&(1<<near.target) > 0 {
