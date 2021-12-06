@@ -27,7 +27,7 @@ func TestPart(t *testing.T) {
 func run(rows []string) int {
 	var fishCount [9]int
 	for _, valStr := range strings.Split(rows[0], ",") {
-		val := ax.MustParseInt(valStr)
+		val := ax.MustParseInt[int](valStr)
 		fishCount[val]++
 	}
 	var nextCount [9]int

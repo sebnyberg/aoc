@@ -39,7 +39,7 @@ func run(lines []string) int {
 	numsLine := strings.Split(lines[0], ",")
 	nums := make([]int, len(numsLine))
 	for i, numStr := range numsLine {
-		nums[i] = ax.MustParseInt(numStr)
+		nums[i] = ax.MustParseInt[int]numStr)
 	}
 
 	// Parse boards
@@ -58,7 +58,7 @@ func run(lines []string) int {
 			vals[i][row] = make([]int, boardSize)
 			lineIdx := i*6 + 1 + row
 			for col, valStr := range strings.Fields(lines[lineIdx]) {
-				val := ax.MustParseInt(valStr)
+				val := ax.MustParseInt[int]valStr)
 				pos[i][val] = [2]int{row, col}
 				vals[i][row][col] = val
 			}

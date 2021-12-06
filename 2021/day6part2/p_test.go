@@ -35,7 +35,7 @@ func BenchmarkPart(b *testing.B) {
 func run(rows []string, ndays int) int {
 	var fishCount [9]int
 	for _, valStr := range strings.Split(rows[0], ",") {
-		val := ax.MustParseInt(valStr)
+		val := ax.MustParseInt[int](valStr)
 		fishCount[val]++
 	}
 	var nextCount [9]int

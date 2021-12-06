@@ -54,8 +54,8 @@ func run(rows []string) int {
 
 	for _, row := range rows {
 		parts := pat.FindStringSubmatch(row)
-		x1, y1 := ax.MustParseInt(parts[1]), ax.MustParseInt(parts[2])
-		x2, y2 := ax.MustParseInt(parts[3]), ax.MustParseInt(parts[4])
+		x1, y1 := ax.MustParseInt[int]parts[1]), ax.MustParseInt[int]parts[2])
+		x2, y2 := ax.MustParseInt[int]parts[3]), ax.MustParseInt[int]parts[4])
 		dx, dy := ax.Abs(x2-x1), ax.Abs(y2-y1)
 		dirX, dirY := dir(x1, x2), dir(y1, y2)
 		if dx != 0 && dy != 0 {
