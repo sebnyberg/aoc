@@ -1,6 +1,7 @@
 package p_test
 
 import (
+	"aoc/ax"
 	"fmt"
 	"strings"
 	"testing"
@@ -38,7 +39,7 @@ func run(rows []string, ndays int) int {
 		fishCount[val]++
 	}
 	var nextCount [9]int
-	for day := 0; day <= ndays; day++ {
+	for day := 0; day < ndays; day++ {
 		for i := 0; i < 8; i++ {
 			nextCount[i] = fishCount[(i+1)%9]
 		}
@@ -46,9 +47,5 @@ func run(rows []string, ndays int) int {
 		nextCount[8] = fishCount[0]
 		nextCount, fishCount = fishCount, nextCount
 	}
-	var sum int
-	for _, count := range nextCount {
-		sum += count
-	}
-	return sum
+	return ax.Sum(fishCount[:])
 }
