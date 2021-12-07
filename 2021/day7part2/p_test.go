@@ -19,27 +19,46 @@ func TestPart(t *testing.T) {
 	} {
 		t.Run(fmt.Sprintf("%+v", i), func(t *testing.T) {
 			lines := ax.MustReadFineLines(tc.fname)
-			require.Equal(t, tc.want, run(lines))
+			require.Equal(t, tc.want, run(parseInput(lines)))
 		})
 	}
 }
 
-const SZ = 2000
+var benchRes int
 
-func run(rows []string) int {
-	row := rows[0]
+func BenchmarkPart(b *testing.B) {
+	input := ax.MustReadFineLines("input")
+	vals := parseInput(input)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		benchRes = run(vals)
+	}
+}
+
+func parseInput(rows []string) []int {
+	valStrs := strings.Split(rows[0], ",")
+	res := make([]int, len(valStrs))
+	for i, valStr := range valStrs {
+		res[i] = ax.MustParseInt[int](valStr)
+	}
+	return res
+}
+
+const SZ int = 2001
+
+func run(vals []int) int {
 	var posCount [SZ]int
-	for _, valStr := range strings.Split(row, ",") {
-		posCount[ax.MustParseInt[int](valStr)]++
+	for _, val := range vals {
+		posCount[val]++
 	}
 
 	// Calculate cost of moving all crabs from the left to a given position
 	costLeft := make([]int, SZ)
-	for i := 1; i < SZ; i++ {
-		var count int
-		for j := 0; j <= i; j++ {
-			costLeft[i] += count * (i - j + 1)
-			count += posCount[j]
+	for i := int(0); i < SZ; i++ {
+		var cost int
+		for j := i + 1; j < SZ; j++ {
+			cost += (j - i) * posCount[i]
+			costLeft[j] += cost
 		}
 	}
 
@@ -55,5 +74,5 @@ func run(rows []string) int {
 		minCost = ax.Min(minCost, costLeft[i]+costRight)
 	}
 
-	return minCost
+	return int(minCost)
 }
