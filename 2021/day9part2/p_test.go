@@ -74,10 +74,10 @@ func run(rows []string) int {
 				continue
 			}
 			seen[to1d(i, j)] = true
-			for _, nei := range [][2]int{
+			for _, near := range [][2]int{
 				{i + 1, j}, {i - 1, j}, {i, j + 1}, {i, j - 1},
 			} {
-				ii, jj := nei[0], nei[1]
+				ii, jj := near[0], near[1]
 				if ok(ii, jj) && !seen[to1d(ii, jj)] {
 					union(to1d(i, j), to1d(ii, jj))
 				}
