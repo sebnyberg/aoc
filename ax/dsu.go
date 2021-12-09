@@ -4,9 +4,10 @@ import "constraints"
 
 type DSU[T constraints.Integer] struct {
 	parent []T
+	size   []T
 }
 
-func NewDSU[T constraints.Integer](n T) DSU[T] {
+func NewDSU[T constraints.Integer](n int) DSU[T] {
 	dsu := DSU[T]{
 		parent: make([]T, n+1),
 	}
@@ -28,6 +29,8 @@ func (d *DSU[T]) Union(a, b T) {
 	rootA, rootB := d.Find(a), d.Find(b)
 	if rootA != rootB {
 		d.parent[rootB] = rootA
+		d.size[rootA] += d.size[rootB]
+		d.size[rootB] = 1
 	}
 }
 
