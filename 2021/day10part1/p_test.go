@@ -3,7 +3,6 @@ package p_test
 import (
 	"aoc/ax"
 	"fmt"
-	"sort"
 	"strings"
 	"testing"
 
@@ -27,7 +26,6 @@ func TestPart(t *testing.T) {
 
 func run(rows []string) int {
 	scoreRow := func(row string) int {
-		// Corrupted lines close a param that never opened
 		want := make([]byte, 0)
 		n := 0
 		for _, ch := range row {
@@ -41,34 +39,26 @@ func run(rows []string) int {
 				continue
 			}
 			if byte(ch) != want[n-1] {
-				return 0
+				switch ch {
+				case ')':
+					return 3
+				case ']':
+					return 57
+				case '}':
+					return 1197
+				case '>':
+					return 25137
+				}
 			}
 			want = want[:n-1] // pop
 			n--
 		}
-		var score int
-		for i := len(want) - 1; i >= 0; i-- {
-			score *= 5
-			switch want[i] {
-			case ')':
-				score += 1
-			case ']':
-				score += 2
-			case '}':
-				score += 3
-			case '>':
-				score += 4
-			}
-		}
-		return score
+		return 0
 	}
 
-	scores := make([]int, 0, len(rows))
+	var res int
 	for _, row := range rows {
-		if score := scoreRow(row); score > 0 {
-			scores = append(scores, score)
-		}
+		res += scoreRow(row)
 	}
-	sort.Ints(scores)
-	return scores[len(scores)/2]
+	return res
 }
