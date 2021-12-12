@@ -12,7 +12,7 @@ func MustParseInt(s string) int {
 // provided base. If parsing is unsuccessful, the error will be logged followed
 // by os.Exit(1).
 func MustParseIntBase(s string, base int) int {
-	res, err := strconv.ParseInt(s, 10, 64)
+	res, err := strconv.ParseInt(s, base, 64)
 	Check(err, "parse int")
 	return int(res)
 }
