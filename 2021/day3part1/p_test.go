@@ -1,4 +1,4 @@
-package p_test
+package day3part1
 
 import (
 	"aoc/ax"
@@ -18,7 +18,7 @@ func TestPart(t *testing.T) {
 	} {
 		t.Run(fmt.Sprintf("%+v", i), func(t *testing.T) {
 			lines := ax.MustReadFineLines(tc.fname)
-			require.Equal(t, tc.want, run(lines))
+			require.Equal(t, tc.want, Run(lines))
 		})
 	}
 }
@@ -26,30 +26,6 @@ func TestPart(t *testing.T) {
 func BenchmarkRun(b *testing.B) {
 	lines := ax.MustReadFineLines("input")
 	for n := 0; n < b.N; n++ {
-		run(lines)
+		Run(lines)
 	}
-}
-
-func run(lines []string) int {
-	n := len(lines[0])
-	m := len(lines)
-	oneCount := make([]int, n)
-	for _, line := range lines {
-		for i := 0; i < len(line); i++ {
-			if line[i] == '1' {
-				oneCount[i]++
-			}
-		}
-	}
-	var gamma, eps int
-	for _, count := range oneCount {
-		gamma <<= 1
-		eps <<= 1
-		if count*2 > m {
-			gamma += 1
-		} else {
-			eps += 1
-		}
-	}
-	return gamma * eps
 }

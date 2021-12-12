@@ -1,4 +1,4 @@
-package p_test
+package day1part1
 
 import (
 	"aoc/ax"
@@ -18,21 +18,7 @@ func TestPart(t *testing.T) {
 	} {
 		t.Run(fmt.Sprintf("%+v", i), func(t *testing.T) {
 			lines := ax.MustReadFineLines(tc.fname)
-			require.Equal(t, tc.want, run(lines))
+			require.Equal(t, tc.want, Run(lines))
 		})
 	}
-}
-
-func run(lines []string) int {
-	lineInts := make([]int, len(lines))
-	for i := range lines {
-		lineInts[i] = ax.MustParseIntBase[int](lines[i], 10)
-	}
-	var count int
-	for i := 1; i < len(lineInts); i++ {
-		if lineInts[i-1] < lineInts[i] {
-			count++
-		}
-	}
-	return count
 }

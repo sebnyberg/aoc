@@ -1,9 +1,8 @@
-package p_test
+package day8part1
 
 import (
 	"aoc/ax"
 	"fmt"
-	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -19,21 +18,7 @@ func TestPart(t *testing.T) {
 	} {
 		t.Run(fmt.Sprintf("%+v", i), func(t *testing.T) {
 			lines := ax.MustReadFineLines(tc.fname)
-			require.Equal(t, tc.want, run(lines))
+			require.Equal(t, tc.want, Run(lines))
 		})
 	}
-}
-
-func run(rows []string) int {
-	var count int
-	for _, row := range rows {
-		parts := strings.Split(row, "|")
-		outputFields := strings.Fields(parts[1])
-		for _, field := range outputFields {
-			if len(field) == 2 || len(field) == 4 || len(field) == 3 || len(field) == 7 {
-				count++
-			}
-		}
-	}
-	return count
 }
