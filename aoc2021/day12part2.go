@@ -43,26 +43,25 @@ func Day12Part2(rows []string) string {
 	}
 	start := strToIdx["start"]
 	end := strToIdx["end"]
-	var res int
 
-	var dfs func(bm, cur int, double bool)
-	dfs = func(bm, cur int, double bool) {
+	var dfs func(bm, cur int, double bool) int
+	dfs = func(bm, cur int, double bool) int {
 		if cur == end {
-			res++
-			return
+			return 1
 		}
+		var res int
 		for _, nei := range adj[cur] {
 			if !smallCave[nei] {
-				dfs(bm, nei, double)
+				res += dfs(bm, nei, double)
 				continue
 			}
 			if bm&(1<<nei) == 0 {
-				dfs(bm|(1<<nei), nei, double)
+				res += dfs(bm|(1<<nei), nei, double)
 			} else if !double {
-				dfs(bm|(1<<nei), nei, true)
+				res += dfs(bm|(1<<nei), nei, true)
 			}
 		}
+		return res
 	}
-	dfs(1<<start, start, false)
-	return strconv.Itoa(res)
+	return strconv.Itoa(dfs(1<<start, start, false))
 }
