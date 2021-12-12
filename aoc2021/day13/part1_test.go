@@ -1,4 +1,4 @@
-package day01
+package day13
 
 import (
 	"aoc/ax"
@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func BenchmarkPart1(b *testing.B) {
+func BenchmarkDay13Part1(b *testing.B) {
 	var res string
 	for i := 0; i < b.N; i++ {
 		res = Part1(ax.MustReadFineLines("input"))
@@ -15,11 +15,11 @@ func BenchmarkPart1(b *testing.B) {
 	_ = res
 }
 
-func TestPart1(t *testing.T) {
-	assert.Equal(t, "11111", Part1(ax.MustReadFineLines("small")))
-	assert.Equal(t, "11111", Part1(ax.MustReadFineLines("input")))
+func TestDay13Part1(t *testing.T) {
+	assert.Equal(t, "10", Part1(ax.MustReadFineLines("small")))
+	assert.Equal(t, "3510", Part1(ax.MustReadFineLines("input")))
 }
 
-func Part1(lines []string) string {
+func Part1(rows []string) string {
 	return ""
 }

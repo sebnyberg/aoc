@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func BenchmarkPart1(b *testing.B) {
+func BenchmarkDay05Part1(b *testing.B) {
 	var res string
 	for i := 0; i < b.N; i++ {
 		res = Part1(ax.MustReadFineLines("input"))
@@ -17,7 +17,7 @@ func BenchmarkPart1(b *testing.B) {
 	_ = res
 }
 
-func TestPart1(t *testing.T) {
+func TestDay05Part1(t *testing.T) {
 	assert.Equal(t, "5", Part1(ax.MustReadFineLines("small")))
 	assert.Equal(t, "5092", Part1(ax.MustReadFineLines("input")))
 }
