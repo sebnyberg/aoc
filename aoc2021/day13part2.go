@@ -1,1 +1,0 @@
-package aoc2021

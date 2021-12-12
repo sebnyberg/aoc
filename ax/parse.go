@@ -14,7 +14,7 @@ func MustParseInt[T constraints.Integer](s string) T {
 // MustParseIntBase[int] parses the input string as an int with the provided base.
 // If unsuccessful, the error will be logged followed by os.Exit(1).
 func MustParseIntBase[T constraints.Integer](s string, base int) T {
-	res, err := strconv.ParseInt(s, 10, 64)
+	res, err := strconv.ParseInt(s, base, 64)
 	Check(err, "parse int")
 	return T(res)
 }
