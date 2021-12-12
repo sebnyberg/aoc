@@ -25,10 +25,10 @@ func run(lines chan string) int {
 			log.Fatalln("invalid number of matches")
 		}
 		action := matches[1]
-		x1 := ax.MustParseIntBase(matches[2], 10)
-		y1 := ax.MustParseIntBase(matches[3], 10)
-		x2 := ax.MustParseIntBase(matches[4], 10)
-		y2 := ax.MustParseIntBase(matches[5], 10)
+		x1 := ax.MustParseIntBase[int](matches[2], 10)
+		y1 := ax.MustParseIntBase[int](matches[3], 10)
+		x2 := ax.MustParseIntBase[int](matches[4], 10)
+		y2 := ax.MustParseIntBase[int](matches[5], 10)
 		if x2 < x1 {
 			x1, x2 = x2, x1
 		}
@@ -41,7 +41,7 @@ func run(lines chan string) int {
 				case "turn on":
 					brightness[x][y]++
 				case "turn off":
-					brightness[x][y] = ax.Max16(0, brightness[x][y]-1)
+					brightness[x][y] = ax.Max(0, brightness[x][y]-1)
 				case "toggle":
 					brightness[x][y] += 2
 				default:

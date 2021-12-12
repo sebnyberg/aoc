@@ -33,9 +33,9 @@ func run(lines []string, time int) int {
 	periods := make([]int, len(lines))
 	for i, line := range lines {
 		parts := pat.FindStringSubmatch(line)
-		speed := ax.MustParseIntBase(parts[2], 10)
-		duration := ax.MustParseIntBase(parts[3], 10)
-		restTime := ax.MustParseIntBase(parts[4], 10)
+		speed := ax.MustParseInt[int](parts[2])
+		duration := ax.MustParseInt[int](parts[3])
+		restTime := ax.MustParseInt[int](parts[4])
 		period := duration + restTime
 		periods[i] = period
 		deltas[i] = make([]int8, period)

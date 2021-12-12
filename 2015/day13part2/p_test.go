@@ -45,7 +45,7 @@ func run(lines []string) int {
 		if parts[2] == "lose" {
 			sign = -1
 		}
-		v := ax.MustParseIntBase(parts[3], 10)
+		v := ax.MustParseInt[int](parts[3])
 		i, j := personIdx[a], personIdx[b]
 		preferences = append(preferences, []int{i, j, sign * v})
 	}
