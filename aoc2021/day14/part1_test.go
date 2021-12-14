@@ -28,6 +28,7 @@ func Part1(rows []string) int {
 		next *listNode
 	}
 
+	// Parse first row as a list
 	root := &listNode{}
 	cur := root
 	for i := range rows[0] {
@@ -35,16 +36,18 @@ func Part1(rows []string) int {
 		cur = cur.next
 	}
 
+	// Parse pairs
 	rows = rows[2:]
 	pat := regexp.MustCompile(`^(\w{2}) -> (\w)$`)
 	pairs := make(map[[2]byte]byte, len(rows))
 	for _, row := range rows {
 		parts := pat.FindStringSubmatch(row)
 		pair := parts[1]
-		insert := parts[2]
-		pairs[[2]byte{pair[0], pair[1]}] = insert[0]
+		ext := parts[2]
+		pairs[[2]byte{pair[0], pair[1]}] = ext[0]
 	}
 
+	// Insert extensions into list
 	for i := 0; i < 10; i++ {
 		cur := root.next
 		for cur.next != nil {
@@ -58,6 +61,8 @@ func Part1(rows []string) int {
 			panic("no matching pair")
 		}
 	}
+
+	// Count results
 	var count [26]int
 	cur = root.next
 	for cur != nil {
@@ -65,6 +70,7 @@ func Part1(rows []string) int {
 		cur = cur.next
 	}
 
+	// Find min/max count
 	var maxCount int
 	minCount := math.MaxInt32
 	for _, cnt := range count {
