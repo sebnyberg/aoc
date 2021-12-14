@@ -6,4 +6,4 @@ test:
 
 .PHONY: bench
 bench:
-	@go test -run=None -bench=. ./aoc2021/... | grep "Part"
+	@bash bench.sh
