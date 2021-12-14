@@ -38,6 +38,7 @@ func Part2(rows []string) int {
 		pairs[pair[0]-'A'][pair[1]-'A'] = insert[0] - 'A'
 	}
 
+	// Initial counting of pairs / results
 	var pairCount [26][26]int
 	var res [26]int
 	res[firstRow[0]-'A']++
@@ -47,6 +48,8 @@ func Part2(rows []string) int {
 		res[b]++
 	}
 
+	// For each pair count > 0, increase the result for that letter
+	// correspondingly. Also, record pair counts for next iteration.
 	for i := 0; i < maxDepth; i++ {
 		var nextPairCount [26][26]int
 		for left := range pairCount {
