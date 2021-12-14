@@ -19,61 +19,54 @@ func BenchmarkDay14Part1(b *testing.B) {
 
 func TestDay14Part1(t *testing.T) {
 	assert.Equal(t, 1588, Part1(ax.MustReadFineLines("small")))
-	assert.Equal(t, 807, Part1(ax.MustReadFineLines("input")))
+	assert.Equal(t, 2915, Part1(ax.MustReadFineLines("input")))
 }
 
 func Part1(rows []string) int {
-	type listNode struct {
-		val  byte
-		next *listNode
-	}
+	const maxDepth = 10
 
-	// Parse first row as a list
-	root := &listNode{}
-	cur := root
-	for i := range rows[0] {
-		cur.next = &listNode{val: rows[0][i]}
-		cur = cur.next
-	}
+	firstRow := rows[0]
 
-	// Parse pairs
+	// Parse pairs into map
 	rows = rows[2:]
 	pat := regexp.MustCompile(`^(\w{2}) -> (\w)$`)
-	pairs := make(map[[2]byte]byte, len(rows))
+	var pairs [26][26]byte
 	for _, row := range rows {
 		parts := pat.FindStringSubmatch(row)
 		pair := parts[1]
-		ext := parts[2]
-		pairs[[2]byte{pair[0], pair[1]}] = ext[0]
+		insert := parts[2]
+		pairs[pair[0]-'A'][pair[1]-'A'] = insert[0] - 'A'
 	}
 
-	// Insert extensions into list
-	for i := 0; i < 10; i++ {
-		cur := root.next
-		for cur.next != nil {
-			k := [2]byte{cur.val, cur.next.val}
-			if v, exists := pairs[k]; exists {
-				n := &listNode{val: v, next: cur.next}
-				cur.next = n
-				cur = n.next
-				continue
+	var pairCount [26][26]int
+	var res [26]int
+	res[firstRow[0]-'A']++
+	for i := 1; i < len(firstRow); i++ {
+		a, b := firstRow[i-1]-'A', firstRow[i]-'A'
+		pairCount[a][b]++
+		res[b]++
+	}
+
+	for i := 0; i < maxDepth; i++ {
+		var nextPairCount [26][26]int
+		for left := range pairCount {
+			for right, count := range pairCount[left] {
+				if count == 0 {
+					continue
+				}
+				v := pairs[left][right]
+				nextPairCount[left][v] += count
+				nextPairCount[v][right] += count
+				res[v] += count
 			}
-			panic("no matching pair")
 		}
+		pairCount = nextPairCount
 	}
 
-	// Count results
-	var count [26]int
-	cur = root.next
-	for cur != nil {
-		count[cur.val-'A']++
-		cur = cur.next
-	}
-
-	// Find min/max count
+	// Find max/min count
 	var maxCount int
-	minCount := math.MaxInt32
-	for _, cnt := range count {
+	minCount := math.MaxInt64
+	for _, cnt := range res {
 		if cnt > maxCount {
 			maxCount = cnt
 		}
