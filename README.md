@@ -9,7 +9,7 @@ I typically make comments in the code only if the exercise is medium-hard. These
 comments usually discuss whether exhaustive search is plausible from a time
 complexity point of view.
 
-## Benchmarks
+## 2021 Benchmarks
 
 | day    | part   | time/op     | alloc/op    | allocs/op  |
 | ------ | ------ | ----------- | ----------- | ---------- |
