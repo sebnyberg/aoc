@@ -9,15 +9,15 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var day13part1 int
+var day14part1 int
 
-func BenchmarkDay13Part1(b *testing.B) {
+func BenchmarkDay14Part1(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		day13part1 = Part1(ax.MustReadFineLines("input"))
+		day14part1 = Part1(ax.MustReadFineLines("input"))
 	}
 }
 
-func TestDay13Part1(t *testing.T) {
+func TestDay14Part1(t *testing.T) {
 	assert.Equal(t, 1588, Part1(ax.MustReadFineLines("small")))
 	assert.Equal(t, 807, Part1(ax.MustReadFineLines("input")))
 }

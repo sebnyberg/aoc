@@ -25,3 +25,93 @@ Day12Part1-6  51.4µs ± 2%  67.6kB ± 0%    79.0 ± 0%
 Day12Part2-6   116µs ± 9%  92.5kB ± 0%    80.0 ± 0%
 Day13Part1-6   209µs ± 1%   183kB ± 0%   2.05k ± 0%
 Day13Part2-6   952µs ±91%  1.38MB ±92%   6.96k ±70%
+
+name          time/op
+Day01Part1-6   124µs ± 3%
+Day01Part2-6   125µs ± 3%
+Day02Part1-6   413µs ± 2%
+Day02Part2-6   414µs ± 3%
+Day03Part1-6   109µs ± 3%
+Day03Part2-6   489µs ± 8%
+Day04Part1-6   363µs ± 1%
+Day04Part2-6   445µs ± 2%
+Day05Part1-6   549µs ± 5%
+Day05Part2-6   793µs ± 1%
+Day06Part1-6  21.4µs ± 2%
+Day06Part2-6  24.5µs ± 5%
+Day07Part1-6  48.5µs ± 4%
+Day07Part2-6  2.96ms ± 1%
+Day08Part1-6  71.9µs ± 1%
+Day08Part2-6   161µs ± 0%
+Day09Part1-6   262µs ± 1%
+Day09Part2-6   396µs ± 1%
+Day10Part1-6   108µs ± 1%
+Day10Part2-6   112µs ± 2%
+Day11Part1-6  72.7µs ± 6%
+Day11Part2-6   170µs ± 3%
+Day12Part1-6  50.3µs ± 3%
+Day12Part2-6   110µs ± 1%
+Day13Part1-6   209µs ± 4%
+Day13Part2-6   212µs ± 1%
+Day14Part1-6  1.10ms ± 1%
+Day14Part2-6  1.61ms ± 7%
+
+name          alloc/op
+Day01Part1-6   148kB ± 0%
+Day01Part2-6   148kB ± 0%
+Day02Part1-6   179kB ± 0%
+Day02Part2-6   179kB ± 0%
+Day03Part1-6  70.8kB ± 0%
+Day03Part2-6   174kB ± 0%
+Day04Part1-6   320kB ± 0%
+Day04Part2-6   320kB ± 0%
+Day05Part1-6   118kB ± 0%
+Day05Part2-6   118kB ± 0%
+Day06Part1-6  9.78kB ± 0%
+Day06Part2-6  9.79kB ± 0%
+Day07Part1-6  24.8kB ± 0%
+Day07Part2-6  33.0kB ± 0%
+Day08Part1-6  50.3kB ± 0%
+Day08Part2-6  82.4kB ± 0%
+Day09Part1-6   112kB ± 0%
+Day09Part2-6   286kB ± 0%
+Day10Part1-6  21.6kB ± 0%
+Day10Part2-6  22.5kB ± 0%
+Day11Part1-6  4.90kB ± 0%
+Day11Part2-6  4.90kB ± 0%
+Day12Part1-6  67.6kB ± 0%
+Day12Part2-6  92.5kB ± 0%
+Day13Part1-6   183kB ± 0%
+Day13Part2-6   111kB ± 0%
+Day14Part1-6   338kB ± 0%
+Day14Part2-6  2.64MB ± 0%
+
+name          allocs/op
+Day01Part1-6   2.02k ± 0%
+Day01Part2-6   2.02k ± 0%
+Day02Part1-6   3.04k ± 0%
+Day02Part2-6   3.04k ± 0%
+Day03Part1-6   1.02k ± 0%
+Day03Part2-6   1.15k ± 0%
+Day04Part1-6   2.54k ± 0%
+Day04Part2-6   2.55k ± 0%
+Day05Part1-6   1.55k ± 0%
+Day05Part2-6   1.55k ± 0%
+Day06Part1-6    10.0 ± 0%
+Day06Part2-6    10.0 ± 0%
+Day07Part1-6    10.0 ± 0%
+Day07Part2-6    11.0 ± 0%
+Day08Part1-6     616 ± 0%
+Day08Part2-6     816 ± 0%
+Day09Part1-6     216 ± 0%
+Day09Part2-6     220 ± 0%
+Day10Part1-6     321 ± 0%
+Day10Part2-6     323 ± 0%
+Day11Part1-6    22.0 ± 0%
+Day11Part2-6    22.0 ± 0%
+Day12Part1-6    79.0 ± 0%
+Day12Part2-6    80.0 ± 0%
+Day13Part1-6   2.05k ± 0%
+Day13Part2-6   2.06k ± 0%
+Day14Part1-6   19.8k ± 0%
+Day14Part2-6   11.9k ± 0%

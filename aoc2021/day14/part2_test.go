@@ -9,11 +9,11 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var day13part2res int
+var day14part2res int
 
 func BenchmarkDay14Part2(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		day13part2res = Part2(ax.MustReadFineLines("input"))
+		day14part2res = Part2(ax.MustReadFineLines("input"))
 	}
 }
 
@@ -39,6 +39,7 @@ func Part2(rows []string) int {
 	}
 
 	// Helper to merge to [26]ints together
+	// [26]int is used to count occurrences of characters
 	merge := func(a, b *[26]int) *[26]int {
 		for i, count := range b {
 			a[i] += count
@@ -46,17 +47,17 @@ func Part2(rows []string) int {
 		return a
 	}
 
-	// Create memoization map, capturing (pair,depth) -> count
+	// Create memoization map, capturing (pair,depth) -> character count
 	type memKey struct {
 		pair  [2]byte
 		depth int
 	}
 	mem := make(map[memKey][26]int)
 
-	// visitPair visits a pair, counting occurrences of characters for that pair
-	// and all levels below that pair in depth
-	var visitPair func(depth int, pair [2]byte) [26]int
-	visitPair = func(depth int, pair [2]byte) [26]int {
+	// countBetween visits a pair, counting occurrences of characters between
+	// the characters in the pair for the current and subsequent levels.
+	var countBetween func(depth int, pair [2]byte) [26]int
+	countBetween = func(depth int, pair [2]byte) [26]int {
 		if depth == maxDepth {
 			return [26]int{}
 		}
@@ -70,22 +71,19 @@ func Part2(rows []string) int {
 		// Otherwise, count occurrences of characters for this level and all levels
 		// below the current.
 		v := pairs[pair]
-		res := [26]int{}
-		leftRes := visitPair(depth+1, [2]byte{pair[0], v})
-		res = *merge(&res, &leftRes)
-		rightRes := visitPair(depth+1, [2]byte{v, pair[1]})
-		res = *merge(&res, &rightRes)
-		res[v-'A']++
+		leftRes := countBetween(depth+1, [2]byte{pair[0], v})
+		leftRes[v-'A']++
+		rightRes := countBetween(depth+1, [2]byte{v, pair[1]})
 
 		// Memoize result and return
-		mem[k] = res
+		mem[k] = *merge(&leftRes, &rightRes)
 		return mem[k]
 	}
 
-	// Visit all pairs in first row
+	// Count occurrences of characters between pairs as a result of extensions
 	res := [26]int{}
 	for i := 0; i < len(firstRow)-1; i++ {
-		pairRes := visitPair(0, [2]byte{firstRow[i], firstRow[i+1]})
+		pairRes := countBetween(0, [2]byte{firstRow[i], firstRow[i+1]})
 		res = *merge(&res, &pairRes)
 	}
 
