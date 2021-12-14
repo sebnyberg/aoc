@@ -30,68 +30,37 @@ func Part2(rows []string) int {
 	// Parse pairs into map
 	rows = rows[2:]
 	pat := regexp.MustCompile(`^(\w{2}) -> (\w)$`)
-	pairs := make(map[[2]byte]byte, len(rows))
+	var pairs [26][26]byte
 	for _, row := range rows {
 		parts := pat.FindStringSubmatch(row)
 		pair := parts[1]
 		insert := parts[2]
-		pairs[[2]byte{pair[0], pair[1]}] = insert[0]
+		pairs[pair[0]-'A'][pair[1]-'A'] = insert[0] - 'A'
 	}
 
-	// Helper to merge to [26]ints together
-	// [26]int is used to count occurrences of characters
-	merge := func(a, b *[26]int) *[26]int {
-		for i, count := range b {
-			a[i] += count
+	var pairCount [26][26]int
+	var res [26]int
+	res[firstRow[0]-'A']++
+	for i := 1; i < len(firstRow); i++ {
+		a, b := firstRow[i-1]-'A', firstRow[i]-'A'
+		pairCount[a][b]++
+		res[b]++
+	}
+
+	for i := 0; i < maxDepth; i++ {
+		var nextPairCount [26][26]int
+		for left := range pairCount {
+			for right, count := range pairCount[left] {
+				if count == 0 {
+					continue
+				}
+				v := pairs[left][right]
+				nextPairCount[left][v] += count
+				nextPairCount[v][right] += count
+				res[v] += count
+			}
 		}
-		return a
-	}
-
-	// Create memoization map, capturing (pair,depth) -> character count
-	type memKey struct {
-		pair  [2]byte
-		depth int
-	}
-	mem := make(map[memKey][26]int)
-
-	// countBetween visits a pair, counting occurrences of characters between
-	// the characters in the pair for the current and subsequent levels.
-	var countBetween func(depth int, pair [2]byte) [26]int
-	countBetween = func(depth int, pair [2]byte) [26]int {
-		if depth == maxDepth {
-			return [26]int{}
-		}
-
-		// Use memoized value if possible
-		k := memKey{pair, depth}
-		if v, exists := mem[k]; exists {
-			return v
-		}
-
-		// Otherwise, count occurrences of characters for this level and all levels
-		// below the current.
-		v := pairs[pair]
-		left := countBetween(depth+1, [2]byte{pair[0], v})
-		right := countBetween(depth+1, [2]byte{v, pair[1]})
-		// add current level's middle character to an arbitrary side
-		// this is to avoid having to allocate another [26]int just for one char
-		left[v-'A']++
-
-		// Memoize result and return
-		mem[k] = *merge(&left, &right)
-		return mem[k]
-	}
-
-	// Count occurrences of characters between pairs as a result of extensions
-	res := [26]int{}
-	for i := 0; i < len(firstRow)-1; i++ {
-		pairRes := countBetween(0, [2]byte{firstRow[i], firstRow[i+1]})
-		res = *merge(&res, &pairRes)
-	}
-
-	// Don't forget to add the contents of the first row!
-	for i := range firstRow {
-		res[firstRow[i]-'A']++
+		pairCount = nextPairCount
 	}
 
 	// Find max/min count
