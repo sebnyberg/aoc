@@ -71,12 +71,14 @@ func Part2(rows []string) int {
 		// Otherwise, count occurrences of characters for this level and all levels
 		// below the current.
 		v := pairs[pair]
-		leftRes := countBetween(depth+1, [2]byte{pair[0], v})
-		leftRes[v-'A']++
-		rightRes := countBetween(depth+1, [2]byte{v, pair[1]})
+		left := countBetween(depth+1, [2]byte{pair[0], v})
+		right := countBetween(depth+1, [2]byte{v, pair[1]})
+		// add current level's middle character to an arbitrary side
+		// this is to avoid having to allocate another [26]int just for one char
+		left[v-'A']++
 
 		// Memoize result and return
-		mem[k] = *merge(&leftRes, &rightRes)
+		mem[k] = *merge(&left, &right)
 		return mem[k]
 	}
 
