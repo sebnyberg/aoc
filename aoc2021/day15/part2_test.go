@@ -9,11 +9,11 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var day14part2res int
+var day15part2res int
 
 func BenchmarkDay15Part2(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		day14part2res = Part2(ax.MustReadFineLines("input"))
+		day15part2res = Part2(ax.MustReadFineLines("input"))
 	}
 }
 
@@ -55,11 +55,13 @@ func Part2(rows []string) int {
 	h[0] = pos{0, 0, 0}
 
 	// While there are entries in the min heap (always true for this)
+	var maxLen int
 	for {
+		maxLen = max(maxLen, len(h))
 		x := heap.Pop(&h).(pos)
 		seen[x.i][x.j] = true
 		if x.i == mm-1 && x.j == nn-1 {
-			return int(x.val)
+			return int(maxLen)
 		}
 		for _, nei := range [][2]int{
 			{x.i + 1, x.j}, {x.i - 1, x.j}, {x.i, x.j - 1}, {x.i, x.j + 1},
@@ -99,4 +101,11 @@ func (h *minHeap) Pop() interface{} {
 	it := (*h)[n-1]
 	*h = (*h)[:n-1]
 	return it
+}
+
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
 }

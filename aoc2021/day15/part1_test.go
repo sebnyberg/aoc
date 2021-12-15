@@ -9,11 +9,11 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var day14part1 int
+var day15part1 int
 
 func BenchmarkDay15Part1(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		day14part1 = Part1(ax.MustReadFineLines("input"))
+		day15part1 = Part1(ax.MustReadFineLines("input"))
 	}
 }
 
