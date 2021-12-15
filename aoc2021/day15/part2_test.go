@@ -77,3 +77,26 @@ func Part2(rows []string) int {
 		}
 	}
 }
+
+type pos struct {
+	i, j int
+	val  uint16
+}
+type minHeap []pos
+
+func (h minHeap) Len() int { return len(h) }
+func (h minHeap) Swap(i, j int) {
+	h[i], h[j] = h[j], h[i]
+}
+func (h minHeap) Less(i, j int) bool {
+	return h[i].val < h[j].val
+}
+func (h *minHeap) Push(x interface{}) {
+	*h = append(*h, x.(pos))
+}
+func (h *minHeap) Pop() interface{} {
+	n := len(*h)
+	it := (*h)[n-1]
+	*h = (*h)[:n-1]
+	return it
+}
