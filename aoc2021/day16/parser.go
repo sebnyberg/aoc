@@ -23,15 +23,13 @@ type parser struct {
 	verSum int
 }
 
-func (p *parser) parsePacket() bitPacket {
-	var packet bitPacket
-	packet.ver, packet.id = p.parseHeader()
-	if packet.id == idLit {
-		packet.val = p.parseLiteral()
-	} else {
-		packet.sub = p.parseOperator()
+func (p *parser) parsePacket() int {
+	_, id := p.parseHeader()
+	if id == idLit {
+		return p.parseLiteral()
 	}
-	return packet
+	vals := p.parseOperator()
+	return eval(id, vals)
 }
 
 func (p *parser) readInt(n int) int {
@@ -69,8 +67,8 @@ func (p *parser) parseLiteral() int {
 	}
 }
 
-func (p *parser) parseOperator() []bitPacket {
-	var res []bitPacket
+func (p *parser) parseOperator() []int {
+	var res []int
 	if p.readInt(1) == 0 {
 		width := p.readInt(15)
 		start := p.pos
@@ -87,7 +85,7 @@ func (p *parser) parseOperator() []bitPacket {
 }
 
 func hexAsBinary(hexBytes []byte) []byte {
-	var res []byte
+	res := make([]byte, 0, len(hexBytes)*4)
 	for _, hexByte := range hexBytes {
 		for i := 0; i < 8; i++ {
 			res = append(res, hexByte&(1<<7)>>7+'0')
@@ -97,45 +95,42 @@ func hexAsBinary(hexBytes []byte) []byte {
 	return res
 }
 
-func (p bitPacket) eval() int {
-	if p.id == idLit {
-		return p.val
-	}
-
+func eval(id int, vals []int) int {
 	// Collect values and perform op
-	first := p.sub[0].eval()
-	res := p.sub[0].eval()
-	for _, sub := range p.sub[1:] {
-		switch p.id {
-		case idSum:
-			res += sub.eval()
-		case idProduct:
-			res *= sub.eval()
-		case idMin:
-			res = min(res, sub.eval())
-		case idMax:
-			res = max(res, sub.eval())
-		case idGt:
-			if first > sub.eval() {
-				res = 1
-			} else {
-				res = 0
-			}
-		case idLt:
-			if first < sub.eval() {
-				res = 1
-			} else {
-				res = 0
-			}
-		case idEq:
-			if first == sub.eval() {
-				res = 1
-			} else {
-				res = 0
-			}
+	switch id {
+	case idSum:
+		for i := 1; i < len(vals); i++ {
+			vals[0] += vals[i]
 		}
+	case idProduct:
+		for i := 1; i < len(vals); i++ {
+			vals[0] *= vals[i]
+		}
+	case idMin:
+		for i := 1; i < len(vals); i++ {
+			vals[0] = min(vals[0], vals[i])
+		}
+	case idMax:
+		for i := 1; i < len(vals); i++ {
+			vals[0] = max(vals[0], vals[i])
+		}
+	case idGt:
+		if vals[0] > vals[1] {
+			return 1
+		}
+		return 0
+	case idLt:
+		if vals[0] < vals[1] {
+			return 1
+		}
+		return 0
+	case idEq:
+		if vals[0] == vals[1] {
+			return 1
+		}
+		return 0
 	}
-	return res
+	return vals[0]
 }
 
 func max(a, b int) int {

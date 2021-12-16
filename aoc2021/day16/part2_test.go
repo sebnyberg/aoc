@@ -35,6 +35,6 @@ func Part2(row string) int {
 	p := parser{
 		bs: bs,
 	}
-	res := p.parsePacket().eval()
+	res := p.parsePacket()
 	return res
 }
