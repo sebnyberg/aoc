@@ -35,7 +35,7 @@ func Part2(rows []string) int {
 				y := ax.MustParseInt[int](parts[1])
 				z := ax.MustParseInt[int](parts[2])
 				p := point{x, y, z}
-				scannerBeaconPoints[j] = append(scannerBeaconPoints[j], p.getVariations())
+				scannerBeaconPoints[j] = append(scannerBeaconPoints[j], p.getOrientations())
 			}
 			i++
 			j++
@@ -105,12 +105,6 @@ func Part2(rows []string) int {
 		return false
 	}
 
-	// Time to pair up scanners.
-	// belongs := make([][]bool, nscanner)
-	// for i := range belongs {
-	// 	belongs[i] = make([]bool, nscanner)
-	// }
-
 	// Perform BFS, starting with zeroth node, finding matching scanners and
 	// adjusting their orientation such that the first set of points corresponds
 	// to the orientation of the first scanner
@@ -141,16 +135,14 @@ func Part2(rows []string) int {
 							if !sharesSpace(firstVecs, vectors[otherScanner][otherBeacon][orient]) {
 								continue
 							}
-							// root and other scanner shares space, shift the orientation of
-							// the other scanner so that its orientation is aligned with the
-							// root
+							// root and other scanner are within the same space. Shift the
+							// orientation of the other scanner so that its aligned with root.
 
 							// The root and other scanner are matching. The 'other' scanner
 							// will now become a root for further iterations, so we adjust the
 							// first orientation of each beacon so that it matches the root,
 							// and also the position of each point as well. This will ensure
 							// a shared field in the end.
-
 							// Also adjust the point locations to align with the root
 							p1 := points[rootScanner][rootBeacon][0]
 							p2 := points[otherScanner][otherBeacon][orient]
@@ -186,28 +178,7 @@ func Part2(rows []string) int {
 		cur, next = next, cur
 	}
 
-	// Debugging time
-	// Flatten points
-	scannerBeacons := make([][]point, nscanner)
-	for scanner := range points {
-		nbeacon := len(points[scanner])
-		scannerBeacons[scanner] = make([]point, nbeacon)
-		for beacon := range points[scanner] {
-			scannerBeacons[scanner][beacon] = points[scanner][beacon][0]
-		}
-		// Sort
-		sortPoints(scannerBeacons[scanner])
-	}
-
-	// Create set of unique points
-	uniquePoints := make(map[point]struct{})
-	for scanner := range scannerBeacons {
-		for _, p := range scannerBeacons[scanner] {
-			uniquePoints[p] = struct{}{}
-		}
-	}
-	uniquePointsList := ax.Keys(uniquePoints)
-	_ = uniquePointsList
+	// Calculate maximum manhattan distance
 	var maxDist int
 	for first := 0; first < nscanner-1; first++ {
 		for second := 0; second < nscanner; second++ {

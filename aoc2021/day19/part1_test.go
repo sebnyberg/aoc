@@ -37,7 +37,7 @@ func Part1(rows []string) int {
 				y := ax.MustParseInt[int](parts[1])
 				z := ax.MustParseInt[int](parts[2])
 				p := point{x, y, z}
-				scannerBeaconPoints[j] = append(scannerBeaconPoints[j], p.getVariations())
+				scannerBeaconPoints[j] = append(scannerBeaconPoints[j], p.getOrientations())
 			}
 			i++
 			j++
@@ -107,26 +107,22 @@ func Part1(rows []string) int {
 		return false
 	}
 
-	// Time to pair up scanners.
-	// belongs := make([][]bool, nscanner)
-	// for i := range belongs {
-	// 	belongs[i] = make([]bool, nscanner)
-	// }
-
 	// Perform BFS, starting with zeroth node, finding matching scanners and
 	// adjusting their orientation such that the first set of points corresponds
 	// to the orientation of the first scanner
-	seen := (1 << 0) // can just be 1 but shifting for clarity - this is a bitmask
+	seen := make([]bool, nscanner)
+	seenCount := 1
+	seen[0] = true
 	cur := []int{0}
 	next := []int{}
 
 	// For each pair of scanners, for each beacon, check if there is an
 	// orientation for which there is a group of 12 shared beacons.
-	for seen != (1<<nscanner)-1 {
+	for seenCount < nscanner {
 		next = next[:0]
 		for _, rootScanner := range cur {
 			for otherScanner := 0; otherScanner < nscanner; otherScanner++ {
-				if seen&(1<<otherScanner) > 0 {
+				if seen[otherScanner] {
 					continue
 				}
 				// For each beacon in first
@@ -171,7 +167,8 @@ func Part1(rows []string) int {
 							}
 
 							next = append(next, otherScanner)
-							seen |= (1 << otherScanner) // mark as seen
+							seen[otherScanner] = true
+							seenCount++
 							goto ContinueSearch
 						}
 					}
@@ -198,23 +195,18 @@ func Part1(rows []string) int {
 
 	// Create set of unique points
 	uniquePoints := make(map[point]struct{})
-	for scanner := range scannerBeacons {
-		for _, p := range scannerBeacons[scanner] {
-			uniquePoints[p] = struct{}{}
+	for scanner := range points {
+		for beacon := range points[scanner] {
+			uniquePoints[points[scanner][beacon][0]] = struct{}{}
 		}
 	}
-	uniquePointsList := ax.Keys(uniquePoints)
-	sortPoints(uniquePointsList)
-	// for _, p := range uniquePointsList {
-	// 	// fmt.Printf("%v,%v,%v\n", p.x, p.y, p.z)
-	// }
 
-	return len(uniquePointsList)
+	return len(uniquePoints)
 }
 
 func TestVariations(t *testing.T) {
 	p := point{1, 2, 3}
-	qq := p.getVariations()
+	qq := p.getOrientations()
 	for i, q := range qq {
 		if i == 0 {
 			continue
@@ -234,7 +226,8 @@ func (p point) vecTo(q point) vector {
 	return vector{q.x - p.x, q.y - p.y, q.z - p.z}
 }
 
-func (p point) getVariations() [48]point {
+// getOrientations returns 48 orientations of point (could be reduced to 24)
+func (p point) getOrientations() [48]point {
 	var res [48]point
 	x, y, z := p.x, p.y, p.z
 	for i := 0; i < 8; i++ {
