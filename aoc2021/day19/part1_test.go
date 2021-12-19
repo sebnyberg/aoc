@@ -212,11 +212,6 @@ func Part1(rows []string) int {
 	return len(uniquePointsList)
 }
 
-type distTo struct {
-	otherIdx int
-	dist     int
-}
-
 func TestVariations(t *testing.T) {
 	p := point{1, 2, 3}
 	qq := p.getVariations()
@@ -232,10 +227,6 @@ func TestVariations(t *testing.T) {
 
 type point struct {
 	x, y, z int
-}
-
-func (p point) intDistTo(q point) int {
-	return p.x*q.x + p.y*q.y + p.z*q.z
 }
 
 // Note that vecTo is not commutative
