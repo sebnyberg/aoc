@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-type vectorHash int
+type vectorHash uint64
 
 func parseVectors(points [][][48]point) [][][48][]vectorHash {
 	nscanner := len(points)
@@ -65,9 +65,9 @@ func parsePoints(rows []string) [][][48]point {
 		scannerBeaconPoints = append(scannerBeaconPoints, make([][48]point, 0, 28))
 		for ; i < len(rows) && rows[i] != ""; i++ {
 			parts := strings.Split(rows[i], ",")
-			x := ax.MustParseInt[int16](parts[0])
-			y := ax.MustParseInt[int16](parts[1])
-			z := ax.MustParseInt[int16](parts[2])
+			x := ax.MustParseInt[int](parts[0])
+			y := ax.MustParseInt[int](parts[1])
+			z := ax.MustParseInt[int](parts[2])
 			p := point{x, y, z}
 			scannerBeaconPoints[j] = append(scannerBeaconPoints[j], p.getOrientations())
 		}
@@ -157,7 +157,7 @@ func sharesSpace(v1, v2 []vectorHash) bool {
 }
 
 type point struct {
-	x, y, z int16
+	x, y, z int
 }
 
 // Note that vecTo is not commutative
@@ -197,7 +197,7 @@ func (p point) getOrientations() [48]point {
 }
 
 type vector struct {
-	x, y, z int16
+	x, y, z int
 }
 
 const (

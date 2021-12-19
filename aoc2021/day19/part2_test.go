@@ -85,7 +85,7 @@ func Part2(rows []string) int {
 	}
 
 	// Calculate maximum manhattan distance
-	var maxDist int16
+	var maxDist int
 	for first := 0; first < nscanner-1; first++ {
 		for second := 0; second < nscanner; second++ {
 			p1, p2 := scannerPos[first], scannerPos[second]
