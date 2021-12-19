@@ -42,22 +42,6 @@ func Part1(rows []string) int {
 	nscanner := len(points)
 	vectors := parseVectors(points)
 
-	// Two scanners shares enough space if there exists a pair of beacons from
-	// each scanner such that there are at least 11 shared vectors from those
-	// beacons.
-	sharesSpace := func(v1, v2 map[vectorHash]struct{}) bool {
-		var count int
-		for vec := range v1 {
-			if _, exists := v2[vec]; exists {
-				count++
-				if count == 11 {
-					return true
-				}
-			}
-		}
-		return false
-	}
-
 	// Perform BFS, starting with zeroth node, finding matching scanners and
 	// adjusting their orientation such that the first set of points corresponds
 	// to the orientation of the first scanner

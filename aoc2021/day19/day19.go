@@ -62,6 +62,22 @@ func parsePoints(rows []string) [][][48]point {
 	return scannerBeaconPoints
 }
 
+// Two scanners shares enough space if there exists a pair of beacons from
+// each scanner such that there are at least 11 shared vectors from those
+// beacons.
+func sharesSpace(v1, v2 map[vectorHash]struct{}) bool {
+	var count int
+	for vec := range v1 {
+		if _, exists := v2[vec]; exists {
+			count++
+			if count == 11 {
+				return true
+			}
+		}
+	}
+	return false
+}
+
 type point struct {
 	x, y, z int16
 }
