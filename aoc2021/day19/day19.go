@@ -3,38 +3,51 @@ package day19
 import (
 	"aoc/ax"
 	"fmt"
+	"math"
 	"sort"
 	"strings"
 )
 
 type vectorHash int
 
-func parseVectors(points [][][48]point) [][][48]map[vectorHash]struct{} {
+func parseVectors(points [][][48]point) [][][48][]vectorHash {
 	nscanner := len(points)
-	vectors := make([][][48]map[vectorHash]struct{}, nscanner)
+	vectors := make([][][48][]vectorHash, nscanner)
+	minVectors := math.MaxInt32
+	maxVectors := 0
 	for scanner, beaconPoints := range points {
 
 		// Create map of vectors per beacon and orientation
 		nbeacons := len(points[scanner])
-		vectors[scanner] = make([][48]map[vectorHash]struct{}, nbeacons)
+		vectors[scanner] = make([][48][]vectorHash, nbeacons)
 
 		// Initialize maps
 		for beacon := 0; beacon < nbeacons; beacon++ {
 			for orient := 0; orient < 48; orient++ {
-				vectors[scanner][beacon][orient] = make(map[vectorHash]struct{})
+				vectors[scanner][beacon][orient] = make([]vectorHash, 0)
 			}
 		}
 
 		// Calculate / add vectors for each pair of beacons
+		minVectors = ax.Min(minVectors, nbeacons-1)
+		maxVectors = ax.Max(maxVectors, nbeacons-1)
 		for firstBeac := 0; firstBeac < nbeacons-1; firstBeac++ {
 			for secondBeac := firstBeac + 1; secondBeac < nbeacons; secondBeac++ {
 				// point values per orientation
 				p1s, p2s := beaconPoints[firstBeac], beaconPoints[secondBeac]
 				for orient := range p1s {
 					p1ToP2 := p1s[orient].vecTo(p2s[orient])
-					vectors[scanner][firstBeac][orient][p1ToP2.hash()] = struct{}{}
+					// vectors[scanner][firstBeac][orient][p1ToP2.hash()] = struct{}{}
+					vectors[scanner][firstBeac][orient] = append(vectors[scanner][firstBeac][orient], p1ToP2.hash())
+					sort.Slice(vectors[scanner][firstBeac][orient], func(i, j int) bool {
+						return vectors[scanner][firstBeac][orient][i] < vectors[scanner][firstBeac][orient][j]
+					})
 					p2ToP1 := p2s[orient].vecTo(p1s[orient])
-					vectors[scanner][secondBeac][orient][p2ToP1.hash()] = struct{}{}
+					// vectors[scanner][secondBeac][orient][p2ToP1.hash()] = struct{}{}
+					vectors[scanner][secondBeac][orient] = append(vectors[scanner][secondBeac][orient], p2ToP1.hash())
+					sort.Slice(vectors[scanner][secondBeac][orient], func(i, j int) bool {
+						return vectors[scanner][secondBeac][orient][i] < vectors[scanner][secondBeac][orient][j]
+					})
 				}
 			}
 		}
@@ -65,13 +78,22 @@ func parsePoints(rows []string) [][][48]point {
 // Two scanners shares enough space if there exists a pair of beacons from
 // each scanner such that there are at least 11 shared vectors from those
 // beacons.
-func sharesSpace(v1, v2 map[vectorHash]struct{}) bool {
+func sharesSpace(v1, v2 []vectorHash) bool {
 	var count int
-	for vec := range v1 {
-		if _, exists := v2[vec]; exists {
+	var l, r int
+	for l != len(v1) && r != len(v2) && ax.Min(len(v1), len(v2))+count >= 11 {
+		if v1[l] == v2[r] {
 			count++
 			if count == 11 {
 				return true
+			}
+			l++
+			r++
+		} else {
+			if v1[l] < v2[r] {
+				l++
+			} else if v2[r] < v1[l] {
+				r++
 			}
 		}
 	}
