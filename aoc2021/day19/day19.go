@@ -206,10 +206,7 @@ const (
 )
 
 func (v vector) hash() vectorHash {
-	res := vectorHash(v.x + 2500)
-	res += 5000 * vectorHash(v.y+2500)
-	res += 5000 * 5000 * vectorHash(v.z+2500)
-	return res
+	return vectorHash((v.x + 2500) + 5000*(v.y+2500) + 5000*5000*(v.z+2500))
 }
 
 func sortPoints(a []point) {

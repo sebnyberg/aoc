@@ -3,6 +3,7 @@ package day19
 import (
 	"aoc/ax"
 	"sync"
+	"sync/atomic"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -47,7 +48,7 @@ func Part2(rows []string) int {
 	// adjusting their orientation such that the first set of points corresponds
 	// to the orientation of the first scanner
 	seen := make([]bool, nscanner)
-	seenCount := 1
+	var seenCount uint64 = 1
 	seen[0] = true
 	cur := []int{0}
 	next := []int{}
@@ -58,7 +59,7 @@ func Part2(rows []string) int {
 
 	// For each pair of scanners, for each beacon, check if there is an
 	// orientation for which there is a group of 12 shared beacons.
-	for seenCount != nscanner {
+	for seenCount != uint64(nscanner) {
 		next = next[:0]
 		for _, rootScanner := range cur {
 			var wg sync.WaitGroup
@@ -73,7 +74,7 @@ func Part2(rows []string) int {
 						seen[other] = true
 						nextMtx.Lock()
 						next = append(next, other)
-						seenCount++
+						atomic.AddUint64(&seenCount, 1)
 						nextMtx.Unlock()
 					}
 				}(otherScanner)
