@@ -108,7 +108,9 @@ func Part2(rows []string) int {
 	// Perform BFS, starting with zeroth node, finding matching scanners and
 	// adjusting their orientation such that the first set of points corresponds
 	// to the orientation of the first scanner
-	seen := (1 << 0) // can just be 1 but shifting for clarity - this is a bitmask
+	seen := make([]bool, nscanner)
+	seenCount := 1
+	seen[0] = true
 	cur := []int{0}
 	next := []int{}
 
@@ -116,13 +118,14 @@ func Part2(rows []string) int {
 	// orientation for which there is a group of 12 shared beacons.
 	scannerPos := make([]point, nscanner)
 	scannerPos[0] = point{0, 0, 0}
-	for seen != (1<<nscanner)-1 {
+	for seenCount != nscanner {
 		next = next[:0]
 		for _, rootScanner := range cur {
 			for otherScanner := 0; otherScanner < nscanner; otherScanner++ {
-				if seen&(1<<otherScanner) > 0 {
+				if seen[otherScanner] {
 					continue
 				}
+
 				// For each beacon in first
 				for rootBeacon := range vectors[rootScanner] {
 					// If there exists a beacon + orientation in second such that there
@@ -166,7 +169,7 @@ func Part2(rows []string) int {
 							scannerPos[otherScanner] = point{-dx, -dy, -dz}
 
 							next = append(next, otherScanner)
-							seen |= (1 << otherScanner) // mark as seen
+							seen[otherScanner] = true
 							goto ContinueSearch
 						}
 					}
