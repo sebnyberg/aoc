@@ -2,7 +2,6 @@ package day19
 
 import (
 	"aoc/ax"
-	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -22,27 +21,8 @@ func TestDay19Part2(t *testing.T) {
 }
 
 func Part2(rows []string) int {
-	// Parse scanner beacon points
-	parseScannerBeaconPoints := func(rows []string) [][][48]point {
-		var i, j int
-		scannerBeaconPoints := make([][][48]point, 0)
-		for i < len(rows) {
-			i++ // skip scanner id
-			scannerBeaconPoints = append(scannerBeaconPoints, make([][48]point, 0))
-			for ; i < len(rows) && rows[i] != ""; i++ {
-				parts := strings.Split(rows[i], ",")
-				x := ax.MustParseInt[int](parts[0])
-				y := ax.MustParseInt[int](parts[1])
-				z := ax.MustParseInt[int](parts[2])
-				p := point{x, y, z}
-				scannerBeaconPoints[j] = append(scannerBeaconPoints[j], p.getOrientations())
-			}
-			i++
-			j++
-		}
-		return scannerBeaconPoints
-	}
-	points := parseScannerBeaconPoints(rows)
+	// Parse points with orientations from rows
+	points := parsePoints(rows)
 
 	// For an integer number of rotations, the x,y, and z can be in different
 	// positions (swapped), which yields 3! => 3*2*1 = 6 different permutations
@@ -57,42 +37,15 @@ func Part2(rows []string) int {
 	// orientations for which at least 11 vectors from a certain point are the
 	// same.
 
-	// The first step is to create such a set of vectors:
-	// [scanner][beacon][orient][vector] = count
+	// Create a set of vectors for each point compared to all other points for
+	// a given orientation.
+	vectors := parseVectors(points)
 	nscanner := len(points)
-	vectors := make([][][48]map[vector]struct{}, nscanner)
-	for scanner, beaconPoints := range points {
-
-		// Create map of vectors per beacon and orientation
-		nbeacons := len(points[scanner])
-		vectors[scanner] = make([][48]map[vector]struct{}, nbeacons)
-
-		// Initialize maps
-		for beacon := 0; beacon < nbeacons; beacon++ {
-			for orient := 0; orient < 48; orient++ {
-				vectors[scanner][beacon][orient] = make(map[vector]struct{})
-			}
-		}
-
-		// Calculate / add vectors for each pair of beacons
-		for firstBeac := 0; firstBeac < nbeacons-1; firstBeac++ {
-			for secondBeac := firstBeac + 1; secondBeac < nbeacons; secondBeac++ {
-				// point values per orientation
-				p1s, p2s := beaconPoints[firstBeac], beaconPoints[secondBeac]
-				for orient := range p1s {
-					p1ToP2 := p1s[orient].vecTo(p2s[orient])
-					vectors[scanner][firstBeac][orient][p1ToP2] = struct{}{}
-					p2ToP1 := p2s[orient].vecTo(p1s[orient])
-					vectors[scanner][secondBeac][orient][p2ToP1] = struct{}{}
-				}
-			}
-		}
-	}
 
 	// Two scanners shares enough space if there exists a pair of beacons from
 	// each scanner such that there are at least 11 shared vectors from those
 	// beacons.
-	sharesSpace := func(v1, v2 map[vector]struct{}) bool {
+	sharesSpace := func(v1, v2 map[vectorHash]struct{}) bool {
 		var count int
 		for vec := range v1 {
 			if _, exists := v2[vec]; exists {
@@ -183,7 +136,7 @@ func Part2(rows []string) int {
 	}
 
 	// Calculate maximum manhattan distance
-	var maxDist int
+	var maxDist int16
 	for first := 0; first < nscanner-1; first++ {
 		for second := 0; second < nscanner; second++ {
 			p1, p2 := scannerPos[first], scannerPos[second]
@@ -191,5 +144,5 @@ func Part2(rows []string) int {
 		}
 	}
 
-	return maxDist
+	return int(maxDist)
 }
