@@ -16,3 +16,4 @@
 **/*debug_bin
 **/*.DS_Store
 tmp
+*.pprof

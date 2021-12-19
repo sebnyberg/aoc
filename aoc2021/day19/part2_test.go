@@ -170,6 +170,7 @@ func Part2(rows []string) int {
 
 							next = append(next, otherScanner)
 							seen[otherScanner] = true
+							seenCount++
 							goto ContinueSearch
 						}
 					}

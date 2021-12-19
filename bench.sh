@@ -12,3 +12,5 @@ done
 
 benchstat tmp/res.txt
 rm -rf tmp
+
+# go test -count 1 -run=None -bench=Day19Part2 -benchmem -cpuprofile=cpu.pprof -memprofile=mem.pprof -trace=trace.out ./aoc2021/day19/...
