@@ -24,7 +24,7 @@ func parseVectors(points [][][48]point) [][][48][]vectorHash {
 		// Initialize maps
 		for beacon := 0; beacon < nbeacons; beacon++ {
 			for orient := 0; orient < 48; orient++ {
-				vectors[scanner][beacon][orient] = make([]vectorHash, 0)
+				vectors[scanner][beacon][orient] = make([]vectorHash, 0, 27)
 			}
 		}
 
@@ -39,16 +39,18 @@ func parseVectors(points [][][48]point) [][][48][]vectorHash {
 					p1ToP2 := p1s[orient].vecTo(p2s[orient])
 					// vectors[scanner][firstBeac][orient][p1ToP2.hash()] = struct{}{}
 					vectors[scanner][firstBeac][orient] = append(vectors[scanner][firstBeac][orient], p1ToP2.hash())
-					sort.Slice(vectors[scanner][firstBeac][orient], func(i, j int) bool {
-						return vectors[scanner][firstBeac][orient][i] < vectors[scanner][firstBeac][orient][j]
-					})
 					p2ToP1 := p2s[orient].vecTo(p1s[orient])
 					// vectors[scanner][secondBeac][orient][p2ToP1.hash()] = struct{}{}
 					vectors[scanner][secondBeac][orient] = append(vectors[scanner][secondBeac][orient], p2ToP1.hash())
-					sort.Slice(vectors[scanner][secondBeac][orient], func(i, j int) bool {
-						return vectors[scanner][secondBeac][orient][i] < vectors[scanner][secondBeac][orient][j]
-					})
 				}
+			}
+		}
+		// Sort vectors for faster comparisons
+		for beacon := 0; beacon < nbeacons; beacon++ {
+			for orient := 0; orient < 48; orient++ {
+				sort.Slice(vectors[scanner][beacon][orient], func(i, j int) bool {
+					return vectors[scanner][beacon][orient][i] < vectors[scanner][beacon][orient][j]
+				})
 			}
 		}
 	}
@@ -60,7 +62,7 @@ func parsePoints(rows []string) [][][48]point {
 	scannerBeaconPoints := make([][][48]point, 0)
 	for i < len(rows) {
 		i++ // skip scanner id
-		scannerBeaconPoints = append(scannerBeaconPoints, make([][48]point, 0))
+		scannerBeaconPoints = append(scannerBeaconPoints, make([][48]point, 0, 28))
 		for ; i < len(rows) && rows[i] != ""; i++ {
 			parts := strings.Split(rows[i], ",")
 			x := ax.MustParseInt[int16](parts[0])
@@ -73,6 +75,60 @@ func parsePoints(rows []string) [][][48]point {
 		j++
 	}
 	return scannerBeaconPoints
+}
+
+func compareScanners(
+	vectors [][][48][]vectorHash,
+	points [][][48]point,
+	scannerPos []point,
+	rootScanner, otherScanner int,
+) bool {
+	// For each beacon in first
+	for rootBeacon := range vectors[rootScanner] {
+		// If there exists a beacon + orientation in second such that there
+		// are 11 shared vectors, then there is a match
+		// Orientation of first doesn't matter, the second beacon is
+		// exhaustively searched for all orientations
+		firstVecs := vectors[rootScanner][rootBeacon][0]
+		for otherBeacon := range vectors[otherScanner] {
+			for orient := range vectors[otherScanner][otherBeacon] {
+				if !sharesSpace(firstVecs, vectors[otherScanner][otherBeacon][orient]) {
+					continue
+				}
+				// root and other scanner are within the same space. Shift the
+				// orientation of the other scanner so that its aligned with root.
+
+				// The root and other scanner are matching. The 'other' scanner
+				// will now become a root for further iterations, so we adjust the
+				// first orientation of each beacon so that it matches the root,
+				// and also the position of each point as well. This will ensure
+				// a shared field in the end.
+				// Also adjust the point locations to align with the root
+				p1 := points[rootScanner][rootBeacon][0]
+				p2 := points[otherScanner][otherBeacon][orient]
+				dx, dy, dz := p2.x-p1.x, p2.y-p1.y, p2.z-p1.z
+
+				for otherBeacon := range vectors[otherScanner] {
+					// Use the right orientation for vectors/points
+					vectors[otherScanner][otherBeacon][0] = vectors[otherScanner][otherBeacon][orient]
+					points[otherScanner][otherBeacon][0] = points[otherScanner][otherBeacon][orient]
+
+					// Adjust locations
+					p := points[otherScanner][otherBeacon][0]
+					points[otherScanner][otherBeacon][0] = point{
+						x: p.x - dx,
+						y: p.y - dy,
+						z: p.z - dz,
+					}
+				}
+
+				// Part 2: keep track of scanner positions
+				scannerPos[otherScanner] = point{-dx, -dy, -dz}
+				return true
+			}
+		}
+	}
+	return false
 }
 
 // Two scanners shares enough space if there exists a pair of beacons from
