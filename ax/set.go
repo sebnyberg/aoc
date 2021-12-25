@@ -7,6 +7,8 @@ func (s Set[T]) Has(k T) bool {
 	return exists
 }
 
-func (s Set[T]) Add(k T) {
-	s[k] = struct{}{}
+func (s Set[T]) Add(k ...T) {
+	for _, kk := range k {
+		s[kk] = struct{}{}
+	}
 }
