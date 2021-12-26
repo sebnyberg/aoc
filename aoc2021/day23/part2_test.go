@@ -8,25 +8,25 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var day23part1 int
+var day23part2 int
 
-func BenchmarkDay23Part1(b *testing.B) {
+func BenchmarkDay23Part2(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		day23part1 = Part1(ax.MustReadFineLines("input"))
+		day23part1 = Part2(ax.MustReadFineLines("input"))
 	}
 }
 
-func TestDay23Part1(t *testing.T) {
-	assert.Equal(t, 12521, Part1(ax.MustReadFineLines("small")))
-	assert.Equal(t, 16244, Part1(ax.MustReadFineLines("input")))
+func TestDay23Part2(t *testing.T) {
+	assert.Equal(t, 44169, Part2(ax.MustReadFineLines("smallpart2")))
+	assert.Equal(t, 43226, Part2(ax.MustReadFineLines("inputpart2")))
 }
 
-func Part1(rows []string) int {
+func Part2(rows []string) int {
 	var start stateEnergy
-	start.rooms[0] = string([]byte{rows[2][3], rows[3][3]})
-	start.rooms[1] = string([]byte{rows[2][5], rows[3][5]})
-	start.rooms[2] = string([]byte{rows[2][7], rows[3][7]})
-	start.rooms[3] = string([]byte{rows[2][9], rows[3][9]})
+	start.rooms[0] = string([]byte{rows[2][3], rows[3][3], rows[4][3], rows[5][3]})
+	start.rooms[1] = string([]byte{rows[2][5], rows[3][5], rows[4][5], rows[5][5]})
+	start.rooms[2] = string([]byte{rows[2][7], rows[3][7], rows[4][7], rows[5][7]})
+	start.rooms[3] = string([]byte{rows[2][9], rows[3][9], rows[4][9], rows[5][9]})
 	start.hallway = "..........."
 
 	h := StateHeap{start}

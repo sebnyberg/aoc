@@ -109,6 +109,13 @@ func (s *Stack[T]) Peek() T {
 	return (*s)[len(*s)-1]
 }
 
+func MinMax[T constraints.Ordered](a, b T) (T, T) {
+	if a < b {
+		return a, b
+	}
+	return b, a
+}
+
 func Keys[K comparable, V any](m map[K]V) []K {
 	keys := make([]K, len(m))
 	var i int

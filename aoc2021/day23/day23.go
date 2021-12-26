@@ -1,84 +1,192 @@
 package day23
 
 import (
+	"aoc/ax"
 	"fmt"
 	"strings"
 )
 
-type amphipod int8
-
-const (
-	ampAmber  = 1
-	ampBronze = 2
-	ampCopper = 3
-	ampDesert = 4
-)
-
-func (a amphipod) String() string {
-	switch a {
-	case ampAmber:
-		return "A"
-	case ampBronze:
-		return "B"
-	case ampCopper:
-		return "C"
-	case ampDesert:
-		return "D"
-	}
-	return "."
-}
-
-func (a amphipod) cost() int {
-	switch a {
-	case ampAmber:
-		return 1
-	case ampBronze:
-		return 10
-	case ampCopper:
-		return 100
-	case ampDesert:
-		return 1000
-	}
-	return -1
-}
-
-// The state at a given point in time is the combination of locked rooms,
+// The stateEnergy at a given point in time is the combination of locked rooms,
 // room occupancy and the hallway.
-type state struct {
-	// The moment an amphipod moves into a room, the room becomes "locked"
-	locked [4]bool
-	// Four rooms with two amphipods, first slot is upper, second lower
-	rooms [4][2]amphipod
-	// The hallway has 11 slots for amphipods
-	hallway [11]amphipod
+type stateEnergy struct {
+	energy int
+	state
+	parents []stateEnergy
 }
 
-func (s state) String() string {
+func (s stateEnergy) copy() stateEnergy {
+	cpy := s
+	cpy.parents = make([]stateEnergy, len(s.parents))
+	copy(cpy.parents, s.parents)
+	return cpy
+}
+
+type state struct {
+	// Four rooms with two amphipods, first slot is upper, second lower
+	rooms [4]string
+
+	// The hallway has 10 slots for amphipods
+	hallway string
+}
+
+func (s stateEnergy) valid() bool {
+	return ax.IsExactly(s.hallway, '.') &&
+		ax.IsExactly(s.rooms[0], 'A') &&
+		ax.IsExactly(s.rooms[1], 'B') &&
+		ax.IsExactly(s.rooms[2], 'C') &&
+		ax.IsExactly(s.rooms[3], 'D')
+}
+
+func (s stateEnergy) String() string {
 	var sb strings.Builder
 	sb.WriteString("#############\n")
 	sb.WriteRune('#')
-	for i := 0; i < 11; i++ {
-		sb.WriteString(s.hallway[i].String())
-	}
+	sb.WriteString(s.hallway)
 	sb.WriteString("#\n")
 	sb.WriteString(fmt.Sprintf("###%v#%v#%v#%v###\n", s.rooms[0][0], s.rooms[1][0], s.rooms[2][0], s.rooms[3][0]))
 	sb.WriteString(fmt.Sprintf("  #%v#%v#%v#%v#  \n", s.rooms[0][1], s.rooms[1][1], s.rooms[2][1], s.rooms[3][1]))
 	sb.WriteString("  #########  \n")
 	sb.WriteString("  #")
-	writeLocked := func(locked bool) {
-		if locked {
-			sb.WriteString("L")
-		} else {
-			sb.WriteString("O")
+	return sb.String()
+}
+
+func cost(a byte) int {
+	switch a {
+	case 'A':
+		return 1
+	case 'B':
+		return 10
+	case 'C':
+		return 100
+	case 'D':
+		return 1000
+	}
+	return -1000000
+}
+
+func getMovesFromHallway(s stateEnergy) []stateEnergy {
+	// checkDestRoom checks if the element at hallPos can be moved to its
+	// destination room. Returns true and the next state
+	// or -1, -1 if moving the current hall pos was not possible.
+	checkDestRoom := func(hallPos int) (next stateEnergy, ok bool) {
+		a := s.hallway[hallPos]
+		destRoom := int(a - 'A')
+
+		// Check if the way is clear
+		roomPos := 2 + (2 * destRoom)
+		cpy := s.copy()
+		cpy.parents = append(cpy.parents, s)
+		cpy.energy += cost(a) * ax.Abs(hallPos-roomPos)
+		l, r := ax.MinMax(roomPos, hallPos)
+		for i := l; i <= r; i++ {
+			if i != hallPos && cpy.hallway[i] != '.' {
+				return cpy, false
+			}
+		}
+		// Destination room may only contain the 'right' amphipod
+		for i := 0; i < len(cpy.rooms[destRoom]); i++ {
+			v := cpy.rooms[destRoom][i]
+			if v != '.' && v != a {
+				return cpy, false
+			}
+		}
+
+		cpy.hallway = strWithByte(cpy.hallway, '.', hallPos)
+		// Find first empty slot in the room
+		for i := len(cpy.rooms[destRoom]) - 1; i >= 0; i-- {
+			v := cpy.rooms[destRoom][i]
+			if v == '.' {
+				cpy.rooms[destRoom] = strWithByte(cpy.rooms[destRoom], a, i)
+				cpy.energy += (i + 1) * cost(a)
+				return cpy, true
+			}
+		}
+		return cpy, false
+	}
+
+	// Any amphipod currently in the hallway is moved to any possible destination
+	// room. A possible destination is any room which contains only similar
+	// amphipods, or is empty, and to which the hallway is not blocked.
+	var res []stateEnergy
+	for hallPos := 0; hallPos < len(s.hallway); hallPos++ {
+		if s.hallway[hallPos] == '.' {
+			continue
+		}
+
+		if next, ok := checkDestRoom(hallPos); ok {
+			res = append(res, next)
 		}
 	}
-	writeLocked(s.locked[0])
-	sb.WriteString("#")
-	writeLocked(s.locked[1])
-	sb.WriteString("#")
-	writeLocked(s.locked[2])
-	sb.WriteString("#")
-	writeLocked(s.locked[3])
-	sb.WriteString("#  \n")
-	return sb.String()
+	return res
+}
+
+func getMovesFromRooms(s stateEnergy) []stateEnergy {
+	getHallwayMoves := func(a byte, i int) []stateEnergy {
+		var res []stateEnergy
+		// Can stop in any position not immediately outside a room
+		l := 2 + (2 * i) - 1
+		for l >= 0 && s.hallway[l] == '.' {
+			if l < 2 || l%2 == 1 {
+				cpy := s.copy()
+				cpy.parents = append(cpy.parents, s)
+				cpy.hallway = strWithByte(cpy.hallway, a, l)
+				cpy.energy += ax.Abs((2+2*i)-l) * cost(a)
+				res = append(res, cpy)
+			}
+			l--
+		}
+		r := 2 + (2 * i) + 1
+		for r <= 10 && s.hallway[r] == '.' {
+			if r > 8 || r%2 == 1 {
+				cpy := s.copy()
+				cpy.parents = append(cpy.parents, s)
+				cpy.hallway = strWithByte(cpy.hallway, a, r)
+				cpy.energy += ax.Abs((2+2*i)-r) * cost(a)
+				res = append(res, cpy)
+			}
+			r++
+		}
+		return res
+	}
+
+	var res []stateEnergy
+	for room := range s.rooms {
+		for i := range s.rooms[room] {
+			amph := s.rooms[room][i]
+			if amph == '.' {
+				continue
+			}
+			moves := getHallwayMoves(amph, room)
+			for j := range moves {
+				moves[j].rooms[room] = strWithByte(moves[j].rooms[room], '.', i)
+				moves[j].energy += (i + 1) * cost(amph)
+			}
+			res = append(res, moves...)
+			break
+		}
+	}
+	return res
+}
+
+func strWithByte(s string, a byte, i int) string {
+	return s[:i] + string(a) + s[i+1:]
+}
+
+type StateHeap []stateEnergy
+
+func (h StateHeap) Len() int { return len(h) }
+func (h StateHeap) Swap(i, j int) {
+	h[i], h[j] = h[j], h[i]
+}
+func (h StateHeap) Less(i, j int) bool {
+	return h[i].energy < h[j].energy
+}
+func (h *StateHeap) Push(x interface{}) {
+	*h = append(*h, x.(stateEnergy))
+}
+func (h *StateHeap) Pop() interface{} {
+	n := len(*h)
+	it := (*h)[n-1]
+	*h = (*h)[:n-1]
+	return it
 }
