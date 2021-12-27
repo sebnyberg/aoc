@@ -9,7 +9,7 @@ import (
 )
 
 func Test_Part1(t *testing.T) {
-	input := ax.MustReadFineLines("input")
+	input := ax.MustReadFileLines("input")
 	cur := parse(input[0])
 	for cur.reduce() {
 	}
@@ -28,7 +28,7 @@ func Test_Part1(t *testing.T) {
 }
 
 func Test_Part2(t *testing.T) {
-	inputs := ax.MustReadFineLines("input")
+	inputs := ax.MustReadFileLines("input")
 	var maxMagnitude int
 	for i := 0; i < len(inputs)-1; i++ {
 		for j := i + 1; j < len(inputs); j++ {

@@ -9,7 +9,7 @@ var day18part2res int
 
 func BenchmarkDay18Part2(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		day18part2res = Part2(ax.MustReadFineLines("input")[0])
+		day18part2res = Part2(ax.MustReadFileLines("input")[0])
 	}
 }
 

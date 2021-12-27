@@ -33,7 +33,7 @@ func ReadLinesChan(f io.ReadCloser) chan string {
 
 // ReadFileLines reads lines from the provided file and puts them into a slice
 // of strings. If there is an error, it is logged followed by os.Exit(1).
-func MustReadFineLines(path string) []string {
+func MustReadFileLines(path string) []string {
 	f, err := os.OpenFile(path, os.O_RDONLY, 0644)
 	Check(err, fmt.Sprintf("open file at %q", path))
 	return ReadLines(f)

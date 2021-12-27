@@ -12,13 +12,13 @@ var day19part1 int
 
 func BenchmarkDay19Part1(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		day19part1 = Part1(ax.MustReadFineLines("input"))
+		day19part1 = Part1(ax.MustReadFileLines("input"))
 	}
 }
 
 func TestDay19Part1(t *testing.T) {
-	assert.Equal(t, 79, Part1(ax.MustReadFineLines("small")))
-	assert.Equal(t, 315, Part1(ax.MustReadFineLines("input")))
+	assert.Equal(t, 79, Part1(ax.MustReadFileLines("small")))
+	assert.Equal(t, 315, Part1(ax.MustReadFileLines("input")))
 }
 
 func Part1(rows []string) int {

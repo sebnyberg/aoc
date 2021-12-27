@@ -19,7 +19,7 @@ func BenchmarkDay18Part1(b *testing.B) {
 
 func TestDay18Part1(t *testing.T) {
 	// assert.Equal(t, 11185, Part1(ax.MustReadFineLines("small")))
-	assert.Equal(t, 11185, Part1(ax.MustReadFineLines("small2")))
+	assert.Equal(t, 11185, Part1(ax.MustReadFileLines("small2")))
 	// assert.Equal(t, 11185, Part1(ax.MustReadFineLines("input")))
 }
 

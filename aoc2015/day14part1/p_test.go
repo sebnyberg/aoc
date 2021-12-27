@@ -20,7 +20,7 @@ func TestPart(t *testing.T) {
 		{"input", 2503, 601},
 	} {
 		t.Run(fmt.Sprintf("%+v", i), func(t *testing.T) {
-			lines := ax.MustReadFineLines(tc.fname)
+			lines := ax.MustReadFileLines(tc.fname)
 			require.Equal(t, tc.want, run(lines, tc.time))
 		})
 	}

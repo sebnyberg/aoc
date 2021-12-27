@@ -13,13 +13,13 @@ var day22part2 int
 
 func BenchmarkDay22Part2(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		day22part1 = Part2(ax.MustReadFineLines("input"))
+		day22part1 = Part2(ax.MustReadFileLines("input"))
 	}
 }
 
 func TestDay22Part2(t *testing.T) {
-	assert.Equal(t, 39769202357779, Part2(ax.MustReadFineLines("small")))
-	assert.Equal(t, 1218645427221987, Part2(ax.MustReadFineLines("input")))
+	assert.Equal(t, 39769202357779, Part2(ax.MustReadFileLines("small")))
+	assert.Equal(t, 1218645427221987, Part2(ax.MustReadFileLines("input")))
 }
 
 type cube struct {

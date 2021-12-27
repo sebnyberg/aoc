@@ -12,14 +12,14 @@ import (
 func BenchmarkDay02Part1(b *testing.B) {
 	var res string
 	for i := 0; i < b.N; i++ {
-		res = Part1(ax.MustReadFineLines("input"))
+		res = Part1(ax.MustReadFileLines("input"))
 	}
 	_ = res
 }
 
 func TestDay02Part1(t *testing.T) {
-	assert.Equal(t, "150", Part1(ax.MustReadFineLines("small")))
-	assert.Equal(t, "1524750", Part1(ax.MustReadFineLines("input")))
+	assert.Equal(t, "150", Part1(ax.MustReadFileLines("small")))
+	assert.Equal(t, "1524750", Part1(ax.MustReadFileLines("input")))
 }
 
 func Part1(rows []string) string {
