@@ -12,33 +12,45 @@ import (
 // continuously watch results and debug parsing logic from the terminal:
 //
 // $ watch -n 0.1 "go run main.go < input"
-type Problem struct {
-	Result1  any      // Result to first part of the problem
-	Result2  any      // Result to second part of the problem
+type Problem[T1, T2, T3 comparable] struct {
 	Input    []string // Raw input lines
-	Parsed   []any    // Parsed results
+	Parsed   []T1     // Parsed results
 	HeadN    int      // Print N lines from head of parsed file
 	TailN    int      // Print N lines from tail of parsed file
 	PrintIdx []int    // Print these input indices (prio over head/tail)
+	Result1  T2       // Result to first part of the problem
+	Result2  T3       // Result to second part of the problem
 }
 
-func (p Problem) String() string {
+func (p Problem[T1, T2, T3]) String() string {
 	var sb strings.Builder
-	if p.Result1 != nil {
-		sb.WriteString(fmt.Sprintf("Result1:\n%v\n", p.Result1))
+
+	// Print result 1
+	res1 := "<nil>"
+	if p.Result1 != *new(T2) {
+		res1 = fmt.Sprint(p.Result1)
 	}
-	if p.Result2 != nil {
-		sb.WriteString(fmt.Sprintf("Result2:\n%v\n", p.Result1))
+	sb.WriteString(fmt.Sprintf("Result1:\n%v\n\n", res1))
+
+	// Print result 2
+	res2 := "<nil>"
+	if p.Result2 != *new(T3) {
+		res1 = fmt.Sprint(p.Result2)
 	}
+	sb.WriteString(fmt.Sprintf("Result2:\n%v\n\n", res2))
 	if len(p.Parsed) == 0 {
 		sb.WriteString("No parsed lines\n")
 		return sb.String()
 	}
+
+	// Check if all lines were parsed
 	if len(p.Parsed) != len(p.Input) {
 		d := len(p.Input) - len(p.Parsed)
 		s := fmt.Sprintf("Note! Not all lines were parsed, mismatch: %d\n", d)
 		sb.WriteString(s)
 	}
+
+	// Adjust head/tail in the case of -1
 	headn := p.HeadN
 	if headn < 0 {
 		headn = math.MaxInt32
@@ -47,7 +59,6 @@ func (p Problem) String() string {
 	if tailn < 0 {
 		tailn = math.MaxInt32
 	}
-	n := len(p.Input)
 
 	tw := tabwriter.NewWriter(&sb, 0, 2, 2, ' ', 0)
 	sb.WriteString("")
@@ -57,17 +68,27 @@ func (p Problem) String() string {
 	var j int // position in PrintIdx
 	sort.Ints(p.PrintIdx)
 
+	n := len(p.Input)
 	for i := range p.Input {
-		doPrint := true
+		var skip bool
+
+		// Skip lines depending on tail/head
 		if i > headn && n-tailn > i {
-			// Skip lines depending on tail/head
-			doPrint = false
+			skip = true
+		}
+
+		// Always print printIndices
+		if j < len(p.PrintIdx) &&
+			(p.PrintIdx[j] < 0 || p.PrintIdx[j] >= n) {
+			// Unless out of bounds
+			fmt.Fprintf(tw, "%v\terr:invalid idx\t\n", p.PrintIdx[j])
+			break
 		}
 		if j < len(p.PrintIdx) && i == p.PrintIdx[j] {
-			// PrintIdx takes priority
-			doPrint = true
+			skip = false
 		}
-		if !doPrint {
+
+		if skip {
 			continue
 		}
 
