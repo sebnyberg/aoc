@@ -1,6 +1,6 @@
 package ax
 
-import "constraints"
+import "golang.org/x/exp/constraints"
 
 type DSU[T constraints.Integer] struct {
 	parent []T

@@ -1,8 +1,9 @@
 package ax
 
 import (
-	"constraints"
 	"strconv"
+
+	"golang.org/x/exp/constraints"
 )
 
 // MustParseInt parses the input string as an int with base-10.
