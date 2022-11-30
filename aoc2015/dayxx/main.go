@@ -8,21 +8,21 @@ import (
 	"github.com/sebnyberg/aoc/ax"
 )
 
-func Solve1(input []any) any {
-	return nil
+func Solve1(input []string) string {
+	return ""
 }
 
-func Solve2(input []any) any {
-	return nil
+func Solve2(input []string) string {
+	return ""
 }
 
-func Parse(s string) any {
+func Parse(s string) string {
 	return s
 }
 
 func main() {
 	sc := bufio.NewScanner(os.Stdin)
-	var p ax.Problem
+	var p ax.Problem[string, string, string]
 	p.HeadN = 3
 	p.TailN = 3
 	for sc.Scan() {
