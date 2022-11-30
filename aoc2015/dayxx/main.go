@@ -32,5 +32,5 @@ func main() {
 	}
 	p.Result1 = Solve1(p.Parsed)
 	p.Result2 = Solve2(p.Parsed)
-	fmt.Println(p)
+	fmt.Fprint(os.Stdout, p)
 }
