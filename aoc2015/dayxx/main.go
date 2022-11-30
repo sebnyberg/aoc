@@ -8,21 +8,36 @@ import (
 	"github.com/sebnyberg/aoc/ax"
 )
 
-func Solve1(input []string) string {
+var sprint = fmt.Sprint
+var sprintf = fmt.Sprintf
+var toi = ax.MustParseInt[int]
+var tou = ax.MustParseInt[uint]
+var tof = ax.MustParseFloat[float64]
+var mini = ax.Min[int]
+var minf = ax.Min[float64]
+var minu = ax.Min[uint]
+
+func Solve1(rs []parsedRow) string {
 	return ""
 }
 
-func Solve2(input []string) string {
+func Solve2(rs []parsedRow) string {
 	return ""
 }
 
-func Parse(s string) string {
-	return s
+type parsedRow struct {
+	s string
+}
+
+func Parse(s string) parsedRow {
+	var r parsedRow
+	r.s = s
+	return r
 }
 
 func main() {
 	sc := bufio.NewScanner(os.Stdin)
-	var p ax.Problem[string, string, string]
+	var p ax.Problem[parsedRow]
 	p.HeadN = 3
 	p.TailN = 3
 	for sc.Scan() {

@@ -8,7 +8,16 @@ import (
 	"github.com/sebnyberg/aoc/ax"
 )
 
-func Solve1(input []string) int {
+var sprint = fmt.Sprint
+var sprintf = fmt.Sprintf
+var toi = ax.MustParseInt[int]
+var tou = ax.MustParseInt[uint]
+var tof = ax.MustParseFloat[float64]
+var mini = ax.Min[int]
+var minf = ax.Min[float64]
+var minu = ax.Min[uint]
+
+func Solve1(input []string) string {
 	var floor int
 	for _, ch := range input[0] {
 		switch ch {
@@ -18,10 +27,10 @@ func Solve1(input []string) int {
 			floor--
 		}
 	}
-	return floor
+	return sprint(floor)
 }
 
-func Solve2(input []string) int {
+func Solve2(input []string) string {
 	var floor int
 	for i, ch := range input[0] {
 		switch ch {
@@ -29,12 +38,12 @@ func Solve2(input []string) int {
 			floor++
 		case ')':
 			if floor == 0 {
-				return i + 1
+				return sprint(i + 1)
 			}
 			floor--
 		}
 	}
-	return -1
+	return ""
 }
 
 func Parse(s string) string {
@@ -43,7 +52,7 @@ func Parse(s string) string {
 
 func main() {
 	sc := bufio.NewScanner(os.Stdin)
-	var p ax.Problem[string, int, int]
+	var p ax.Problem[string]
 	p.HeadN = 3
 	p.TailN = 3
 	for sc.Scan() {

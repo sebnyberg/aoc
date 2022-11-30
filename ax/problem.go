@@ -12,29 +12,29 @@ import (
 // continuously watch results and debug parsing logic from the terminal:
 //
 // $ watch -n 0.1 "go run main.go < input"
-type Problem[T1, T2, T3 comparable] struct {
+type Problem[T1 comparable] struct {
 	Input    []string // Raw input lines
 	Parsed   []T1     // Parsed results
 	HeadN    int      // Print N lines from head of parsed file
 	TailN    int      // Print N lines from tail of parsed file
 	PrintIdx []int    // Print these input indices (prio over head/tail)
-	Result1  T2       // Result to first part of the problem
-	Result2  T3       // Result to second part of the problem
+	Result1  string   // Result to first part of the problem
+	Result2  string   // Result to second part of the problem
 }
 
-func (p Problem[T1, T2, T3]) String() string {
+func (p Problem[T1]) String() string {
 	var sb strings.Builder
 
 	// Print result 1
-	res1 := fmt.Sprintf("%v (default value)", *new(T2))
-	if p.Result1 != *new(T2) {
+	res1 := "<nil>"
+	if p.Result1 != "" {
 		res1 = fmt.Sprint(p.Result1)
 	}
 	sb.WriteString(fmt.Sprintf("Result1:\n%v\n\n", res1))
 
 	// Print result 2
-	res2 := fmt.Sprintf("%v (default value)", *new(T3))
-	if p.Result2 != *new(T3) {
+	res2 := "<nil>"
+	if p.Result2 != "" {
 		res2 = fmt.Sprint(p.Result2)
 	}
 	sb.WriteString(fmt.Sprintf("Result2:\n%v\n\n", res2))
@@ -99,7 +99,7 @@ func (p Problem[T1, T2, T3]) String() string {
 		}
 		out := []byte("<nil>")
 		if i < len(p.Parsed) {
-			out = []byte(fmt.Sprint(p.Parsed[i]))
+			out = []byte(fmt.Sprintf("%+v", p.Parsed[i]))
 			// Truncate if too long
 			if len(out) > 36 {
 				out = append(out[:36], "..."...)
