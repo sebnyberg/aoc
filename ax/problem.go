@@ -26,16 +26,16 @@ func (p Problem[T1, T2, T3]) String() string {
 	var sb strings.Builder
 
 	// Print result 1
-	res1 := "<nil>"
+	res1 := fmt.Sprintf("%v (default value)", *new(T2))
 	if p.Result1 != *new(T2) {
 		res1 = fmt.Sprint(p.Result1)
 	}
 	sb.WriteString(fmt.Sprintf("Result1:\n%v\n\n", res1))
 
 	// Print result 2
-	res2 := "<nil>"
+	res2 := fmt.Sprintf("%v (default value)", *new(T3))
 	if p.Result2 != *new(T3) {
-		res1 = fmt.Sprint(p.Result2)
+		res2 = fmt.Sprint(p.Result2)
 	}
 	sb.WriteString(fmt.Sprintf("Result2:\n%v\n\n", res2))
 	if len(p.Parsed) == 0 {
