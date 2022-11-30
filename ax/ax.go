@@ -16,7 +16,11 @@ func Max[T constraints.Ordered](a, b T) T {
 	return b
 }
 
-func Abs[T constraints.Signed](a T) T {
+type TNegative interface {
+	constraints.Signed | constraints.Float
+}
+
+func Abs[T TNegative](a T) T {
 	if a < 0 {
 		return -a
 	}

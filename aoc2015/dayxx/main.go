@@ -8,14 +8,39 @@ import (
 	"github.com/sebnyberg/aoc/ax"
 )
 
+var absf = ax.Abs[float64]
+var absi = ax.Abs[int]
+var minf = ax.Min[float64]
+var mini = ax.Min[int]
+var minu = ax.Min[uint]
+var maxf = ax.Max[float64]
+var maxi = ax.Max[int]
+var maxu = ax.Max[uint]
+var print = fmt.Print
+var printf = fmt.Printf
+var println = fmt.Println
 var sprint = fmt.Sprint
 var sprintf = fmt.Sprintf
+var sprintln = fmt.Sprintln
+var tof = ax.MustParseFloat[float64]
 var toi = ax.MustParseInt[int]
 var tou = ax.MustParseInt[uint]
-var tof = ax.MustParseFloat[float64]
-var mini = ax.Min[int]
-var minf = ax.Min[float64]
-var minu = ax.Min[uint]
+
+func pprint(a ...any) {
+	fmtStr := "%+v"
+	for i := 1; i < len(a); i++ {
+		fmtStr += ",%+v"
+	}
+	fmt.Printf(fmtStr, a...)
+}
+func pprintln(a ...any) {
+	fmtStr := "%+v"
+	for i := 1; i < len(a); i++ {
+		fmtStr += ",%+v"
+	}
+	fmtStr += "\n"
+	fmt.Printf(fmtStr, a...)
+}
 
 func Solve1(rs []parsedRow) string {
 	return ""
