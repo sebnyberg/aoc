@@ -12,7 +12,7 @@ import (
 // continuously watch results and debug parsing logic from the terminal:
 //
 // $ watch -n 0.1 "go run main.go < input"
-type Problem[T1 comparable] struct {
+type Problem[T1 any] struct {
 	Input    []string // Raw input lines
 	Parsed   []T1     // Parsed results
 	HeadN    int      // Print N lines from head of parsed file
@@ -20,6 +20,7 @@ type Problem[T1 comparable] struct {
 	PrintIdx []int    // Print these input indices (prio over head/tail)
 	Result1  string   // Result to first part of the problem
 	Result2  string   // Result to second part of the problem
+	Trunc    bool     // Truncate result to fit reasonably well on the screen
 }
 
 func (p Problem[T1]) String() string {
@@ -93,7 +94,7 @@ func (p Problem[T1]) String() string {
 		}
 
 		in := []byte(p.Input[i])
-		if len(in) > 36 {
+		if p.Trunc && len(in) > 36 {
 			// Truncate if too long
 			in = append(in[:36], "..."...)
 		}
@@ -101,7 +102,7 @@ func (p Problem[T1]) String() string {
 		if i < len(p.Parsed) {
 			out = []byte(fmt.Sprintf("%+v", p.Parsed[i]))
 			// Truncate if too long
-			if len(out) > 36 {
+			if p.Trunc && len(out) > 36 {
 				out = append(out[:36], "..."...)
 			}
 		}
