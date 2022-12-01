@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"os"
 	"regexp"
@@ -9,48 +8,9 @@ import (
 	"github.com/sebnyberg/aoc/ax"
 )
 
-var absf = ax.Abs[float64]
-var absi = ax.Abs[int]
-var minf = ax.Min[float64]
-var mini = ax.Min[int]
-var minu = ax.Min[uint16]
-var maxf = ax.Max[float64]
-var maxi = ax.Max[int]
-var maxu = ax.Max[uint16]
-var print = fmt.Print
-var printf = fmt.Printf
-var println = fmt.Println
-var sprint = fmt.Sprint
-var sprintf = fmt.Sprintf
-var sprintln = fmt.Sprintln
-var tof = ax.MustParseFloat[float64]
-var toi = ax.MustParseInt[int]
-var tou = ax.MustParseInt[uint16]
-
-func pprint(a ...any) {
-	fmtStr := "%+v"
-	for i := 1; i < len(a); i++ {
-		fmtStr += ",%+v"
-	}
-	fmt.Printf(fmtStr, a...)
-}
-func pprintln(a ...any) {
-	fmtStr := "%+v"
-	for i := 1; i < len(a); i++ {
-		fmtStr += ",%+v"
-	}
-	fmtStr += "\n"
-	fmt.Printf(fmtStr, a...)
-}
-
-var intr = regexp.MustCompile(`[1-9][0-9]*|0`)
-
-func isnum(s string) bool {
-	return intr.MatchString(s)
-}
-
-func Solve1(rs []parsedRow) string {
+func solve1(in *input) string {
 	var res int
+	rs := in.xs
 	for _, r := range rs {
 		s := r.speed
 		ft := r.flyTime
@@ -64,16 +24,16 @@ func Solve1(rs []parsedRow) string {
 			t += rt
 		}
 		if t <= 2503 {
-			pos += mini(ft, 2503-t) * s
+			pos += ax.Min(ft, 2503-t) * s
 		}
 		if pos > res {
 			res = pos
 		}
 	}
-	return sprint(res)
+	return fmt.Sprint(res)
 }
 
-func Solve2(rs []parsedRow) string {
+func solve2(in *input) string {
 	n := len(rs)
 	pos := make([]int, n)
 	points := make([]int, n)
@@ -106,10 +66,10 @@ func Solve2(rs []parsedRow) string {
 			maxPoints = points[i]
 		}
 	}
-	return sprint(maxPoints)
+	return fmt.Sprint(maxPoints)
 }
 
-type parsedRow struct {
+type inputItem struct {
 	s        string
 	name     string
 	speed    int
@@ -117,29 +77,33 @@ type parsedRow struct {
 	restTime int
 }
 
+type input struct {
+	n  int
+	xs []inputItem
+}
+
 var rrr = regexp.MustCompile(`(\w+) can fly (\d+) km/s for (\d+) seconds, but then must rest for (\d+) seconds.`)
 
-func Parse(s string) parsedRow {
-	var r parsedRow
+func (p *input) parse(s string) {
+	var x inputItem
 	ss := rrr.FindStringSubmatch(s)
-	r.name = ss[1]
-	r.speed = toi(ss[2])
-	r.flyTime = toi(ss[3])
-	r.restTime = toi(ss[4])
-	return r
+	x.name = ss[1]
+	x.speed = ax.Atoi(ss[2])
+	x.flyTime = ax.Atoi(ss[3])
+	x.restTime = ax.Atoi(ss[4])
+	x.s = s
+	p.xs = append(p.xs, x)
+	p.n++
 }
 
 func main() {
-	sc := bufio.NewScanner(os.Stdin)
-	var p ax.Problem[parsedRow]
-	p.HeadN = 3
-	p.TailN = 3
-	for sc.Scan() {
-		s := sc.Text()
-		p.Input = append(p.Input, s)
-		p.Parsed = append(p.Parsed, Parse(s))
+	in := new(input)
+	rows := ax.ReadLines(os.Stdin)
+	for _, s := range rows {
+		in.parse(s)
 	}
-	p.Result1 = Solve1(p.Parsed)
-	p.Result2 = Solve2(p.Parsed)
-	fmt.Fprint(os.Stdout, p)
+	fmt.Printf("Result1:\n%v\n", solve1(in))
+	fmt.Printf("Result2:\n%v\n\n", solve2(in))
+	fmt.Printf("Input:\n%v\n", ax.Debug(rows, 1))
+	fmt.Printf("Parsed:\n%v\n", ax.Debug(in.xs, 1))
 }

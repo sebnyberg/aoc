@@ -1,17 +1,21 @@
 package ax
 
-import "golang.org/x/exp/constraints"
+import (
+	"golang.org/x/exp/constraints"
+)
 
-func All[T comparable](ts []T, t T) bool {
+// All checks whether all elements pass a given predicate.
+func All[S ~[]T, T comparable](ts S, f func(T) bool) bool {
 	for _, tt := range ts {
-		if tt != t {
+		if !f(tt) {
 			return false
 		}
 	}
 	return true
 }
 
-func Sum[T constraints.Ordered](a []T) T {
+// Sum calculates the arithmetic sum of a slice of numbers.
+func Sum[S ~[]T, T constraints.Ordered](a S) T {
 	var sum T
 	for _, item := range a {
 		sum += item
@@ -19,56 +23,43 @@ func Sum[T constraints.Ordered](a []T) T {
 	return sum
 }
 
-func SumIf[T constraints.Ordered](a []T, f func(T) bool) T {
-	var sum T
-	for _, item := range a {
-		if f(item) {
-			sum += item
-		}
-	}
-	return sum
-}
-
-func SumMatrix[T constraints.Ordered](a [][]T) T {
-	var sum T
+// Map maps a slice to a new slice using a function f.
+func Map[T any, U any](a []T, f func(T) U) []U {
+	res := make([]U, len(a))
 	for i := range a {
-		for _, item := range a[i] {
-			sum += item
-		}
+		res[i] = f(a[i])
 	}
-	return sum
+	return res
 }
 
-func SumMatrixIf[T constraints.Ordered](a [][]T, f func(int, int, T) bool) T {
-	var sum T
+// ForEach calls the function for each element in the slice
+func ForEach[S ~[]T, T any](a S, f func(T)) {
 	for i := range a {
-		for j, item := range a[i] {
-			if f(i, j, item) {
-				sum += item
-			}
-		}
+		f(a[i])
 	}
-	return sum
 }
 
-func CountIf[T any](a []T, f func(int, T) bool) int {
-	var count int
-	for i, el := range a {
-		if f(i, el) {
-			count++
-		}
+// Head returns the top n items in the slice.
+func Head[T any](a []T, n int) []T {
+	if n > len(a) {
+		n = len(a)
 	}
-	return count
+	return a[:n]
 }
 
-func CountIf2D[T any](a [][]T, f func(int, int, T) bool) int {
-	var count int
+// Tail returns the last n items in the slice.
+func Tail[T any](a []T, n int) []T {
+	if n > len(a) {
+		n = len(a)
+	}
+	return a[len(a)-n:]
+}
+
+// MapInplace does an in-place mapping of elements. This function should not be
+// used - it exists merely as a signal that .Map is not actually an in-place
+// operation.
+func MapInplace[S ~[]T, T any](a S, f func(T) T) {
 	for i := range a {
-		for j, el := range a[i] {
-			if f(i, j, el) {
-				count++
-			}
-		}
+		a[i] = f(a[i])
 	}
-	return count
 }

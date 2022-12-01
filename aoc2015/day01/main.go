@@ -1,25 +1,16 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"os"
+	"regexp"
 
 	"github.com/sebnyberg/aoc/ax"
 )
 
-var sprint = fmt.Sprint
-var sprintf = fmt.Sprintf
-var toi = ax.MustParseInt[int]
-var tou = ax.MustParseInt[uint]
-var tof = ax.MustParseFloat[float64]
-var mini = ax.Min[int]
-var minf = ax.Min[float64]
-var minu = ax.Min[uint]
-
-func Solve1(input []string) string {
+func solve1(in *input) string {
 	var floor int
-	for _, ch := range input[0] {
+	for _, ch := range in.xs[0].s {
 		switch ch {
 		case '(':
 			floor++
@@ -27,18 +18,18 @@ func Solve1(input []string) string {
 			floor--
 		}
 	}
-	return sprint(floor)
+	return fmt.Sprint(floor)
 }
 
-func Solve2(input []string) string {
+func solve2(in *input) string {
 	var floor int
-	for i, ch := range input[0] {
+	for i, ch := range in.xs[0].s {
 		switch ch {
 		case '(':
 			floor++
 		case ')':
 			if floor == 0 {
-				return sprint(i + 1)
+				return fmt.Sprint(i + 1)
 			}
 			floor--
 		}
@@ -46,21 +37,32 @@ func Solve2(input []string) string {
 	return ""
 }
 
-func Parse(s string) string {
-	return s
+type inputItem struct {
+	s string
+}
+
+type input struct {
+	n  int
+	xs []inputItem
+}
+
+var pat = regexp.MustCompile(``)
+
+func (p *input) parse(s string) {
+	var x inputItem
+	x.s = s
+	p.xs = append(p.xs, x)
+	p.n++
 }
 
 func main() {
-	sc := bufio.NewScanner(os.Stdin)
-	var p ax.Problem[string]
-	p.HeadN = 3
-	p.TailN = 3
-	for sc.Scan() {
-		s := sc.Text()
-		p.Input = append(p.Input, s)
-		p.Parsed = append(p.Parsed, Parse(s))
+	in := new(input)
+	rows := ax.ReadLines(os.Stdin)
+	for _, s := range rows {
+		in.parse(s)
 	}
-	p.Result1 = Solve1(p.Parsed)
-	p.Result2 = Solve2(p.Parsed)
-	fmt.Fprint(os.Stdout, p)
+	fmt.Printf("Result1:\n%v\n", solve1(in))
+	fmt.Printf("Result2:\n%v\n\n", solve2(in))
+	fmt.Printf("Input:\n%v\n", ax.Debug(rows, 1))
+	fmt.Printf("Parsed:\n%v\n", ax.Debug(in.xs, 1))
 }

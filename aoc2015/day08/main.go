@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"encoding/hex"
 	"fmt"
 	"os"
@@ -10,75 +9,41 @@ import (
 	"github.com/sebnyberg/aoc/ax"
 )
 
-var absf = ax.Abs[float64]
-var absi = ax.Abs[int]
-var minf = ax.Min[float64]
-var mini = ax.Min[int]
-var minu = ax.Min[uint16]
-var maxf = ax.Max[float64]
-var maxi = ax.Max[int]
-var maxu = ax.Max[uint16]
-var print = fmt.Print
-var printf = fmt.Printf
-var println = fmt.Println
-var sprint = fmt.Sprint
-var sprintf = fmt.Sprintf
-var sprintln = fmt.Sprintln
-var tof = ax.MustParseFloat[float64]
-var toi = ax.MustParseInt[int]
-var tou = ax.MustParseInt[uint16]
-
-func pprint(a ...any) {
-	fmtStr := "%+v"
-	for i := 1; i < len(a); i++ {
-		fmtStr += ",%+v"
-	}
-	fmt.Printf(fmtStr, a...)
-}
-func pprintln(a ...any) {
-	fmtStr := "%+v"
-	for i := 1; i < len(a); i++ {
-		fmtStr += ",%+v"
-	}
-	fmtStr += "\n"
-	fmt.Printf(fmtStr, a...)
-}
-
-var intr = regexp.MustCompile(`[1-9][0-9]*|0`)
-
-func isnum(s string) bool {
-	return intr.MatchString(s)
-}
-
-func Solve1(rs []parsedRow) string {
+func solve1(in *input) string {
 	var code int
 	var n int
-	for i := range rs {
-		code += len(rs[i].s)
-		n += len(rs[i].inmem)
+	for i := range in.xs {
+		code += len(in.xs[i].s)
+		n += len(in.xs[i].inmem)
 	}
-	return sprint(code - n)
+	return fmt.Sprint(code - n)
 }
 
-func Solve2(rs []parsedRow) string {
+func solve2(in *input) string {
 	var code int
 	var n int
-	for i := range rs {
-		code += len(rs[i].s)
-		n += len(rs[i].encoded) + 2
+	for i := range in.xs {
+		code += len(in.xs[i].s)
+		n += len(in.xs[i].encoded) + 2
 	}
-	return sprint(n - code)
+	return fmt.Sprint(n - code)
 }
 
-type parsedRow struct {
+type inputItem struct {
 	s       string
 	inmem   string
 	encoded string
 }
 
-func Parse(s string) parsedRow {
-	var r parsedRow
-	r.s = s
+type input struct {
+	n  int
+	xs []inputItem
+}
+
+var pat = regexp.MustCompile(``)
+
+func (p *input) parse(s string) {
+	var x inputItem
 	s = s[1 : len(s)-1]
 	var i int
 	var res []byte
@@ -99,32 +64,32 @@ func Parse(s string) parsedRow {
 		res = append(res, s[i+1])
 		i += 2
 	}
-	r.inmem = string(res)
+	x.inmem = string(res)
 	// Encode by adding \ in front of any " or \
 	res = []byte{}
 	i = 0
-	for i := range r.s {
-		if r.s[i] == '"' || r.s[i] == '\\' {
+	for i := range x.s {
+		if x.s[i] == '"' || x.s[i] == '\\' {
 			res = append(res, '\\')
 		}
-		res = append(res, r.s[i])
+		res = append(res, x.s[i])
 		i++
 	}
-	r.encoded = string(res)
-	return r
+	x.encoded = string(res)
+
+	x.s = s
+	p.xs = append(p.xs, x)
+	p.n++
 }
 
 func main() {
-	sc := bufio.NewScanner(os.Stdin)
-	var p ax.Problem[parsedRow]
-	p.HeadN = 3
-	p.TailN = 3
-	for sc.Scan() {
-		s := sc.Text()
-		p.Input = append(p.Input, s)
-		p.Parsed = append(p.Parsed, Parse(s))
+	in := new(input)
+	rows := ax.ReadLines(os.Stdin)
+	for _, s := range rows {
+		in.parse(s)
 	}
-	p.Result1 = Solve1(p.Parsed)
-	p.Result2 = Solve2(p.Parsed)
-	fmt.Fprint(os.Stdout, p)
+	fmt.Printf("Result1:\n%v\n", solve1(in))
+	fmt.Printf("Result2:\n%v\n\n", solve2(in))
+	fmt.Printf("Input:\n%v\n", ax.Debug(rows, 1))
+	fmt.Printf("Parsed:\n%v\n", ax.Debug(in.xs, 1))
 }

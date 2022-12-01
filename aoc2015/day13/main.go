@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"math"
 	"os"
@@ -10,47 +9,8 @@ import (
 	"github.com/sebnyberg/aoc/ax"
 )
 
-var absf = ax.Abs[float64]
-var absi = ax.Abs[int]
-var minf = ax.Min[float64]
-var mini = ax.Min[int]
-var minu = ax.Min[uint16]
-var maxf = ax.Max[float64]
-var maxi = ax.Max[int]
-var maxu = ax.Max[uint16]
-var print = fmt.Print
-var printf = fmt.Printf
-var println = fmt.Println
-var sprint = fmt.Sprint
-var sprintf = fmt.Sprintf
-var sprintln = fmt.Sprintln
-var tof = ax.MustParseFloat[float64]
-var toi = ax.MustParseInt[int]
-var tou = ax.MustParseInt[uint16]
-
-func pprint(a ...any) {
-	fmtStr := "%+v"
-	for i := 1; i < len(a); i++ {
-		fmtStr += ",%+v"
-	}
-	fmt.Printf(fmtStr, a...)
-}
-func pprintln(a ...any) {
-	fmtStr := "%+v"
-	for i := 1; i < len(a); i++ {
-		fmtStr += ",%+v"
-	}
-	fmtStr += "\n"
-	fmt.Printf(fmtStr, a...)
-}
-
-var intr = regexp.MustCompile(`[1-9][0-9]*|0`)
-
-func isnum(s string) bool {
-	return intr.MatchString(s)
-}
-
-func Solve1(rs []parsedRow) string {
+func solve1(in *input) string {
+	rs := in.xs
 	names := []string{}
 	idx := map[string]int{}
 	for _, r := range rs {
@@ -108,50 +68,54 @@ func Solve1(rs []parsedRow) string {
 	arr := make([]int, n)
 	dfs(seen, arr, 0)
 
-	return sprint(res)
+	return fmt.Sprint(res)
 }
 
-func Solve2(rs []parsedRow) string {
-	rs = append(rs, parsedRow{
+func solve2(in *input) string {
+	in.xs = append(in.xs, inputItem{
 		a:     "Me",
 		b:     "Carol",
 		delta: 0,
 	})
-	return Solve1(rs)
+	return solve1(in)
 }
 
-type parsedRow struct {
+type inputItem struct {
 	s     string
 	a     string
 	b     string
 	delta int
 }
 
+type input struct {
+	n  int
+	xs []inputItem
+}
+
 var rrr = regexp.MustCompile(`(\w+) would (\w+) (\d+) happiness units by sitting next to (\w+)`)
 
-func Parse(s string) parsedRow {
-	var r parsedRow
+func (p *input) parse(s string) {
+	var x inputItem
 	ss := rrr.FindStringSubmatch(s)
-	r.a = ss[1]
-	r.b = ss[4]
-	r.delta = toi(ss[3])
+	x.a = ss[1]
+	x.b = ss[4]
+	x.delta = ax.Atoi(ss[3])
 	if ss[2] == "lose" {
-		r.delta *= -1
+		x.delta *= -1
 	}
-	return r
+	x.s = s
+	p.xs = append(p.xs, x)
+	p.n++
 }
 
 func main() {
-	sc := bufio.NewScanner(os.Stdin)
-	var p ax.Problem[parsedRow]
-	p.HeadN = 3
-	p.TailN = 3
-	for sc.Scan() {
-		s := sc.Text()
-		p.Input = append(p.Input, s)
-		p.Parsed = append(p.Parsed, Parse(s))
+	in := new(input)
+	rows := ax.ReadLines(os.Stdin)
+	for _, s := range rows {
+		in.parse(s)
 	}
-	p.Result1 = Solve1(p.Parsed)
-	p.Result2 = Solve2(p.Parsed)
-	fmt.Fprint(os.Stdout, p)
+	fmt.Printf("Result1:\n%v\n", solve1(in))
+	fmt.Printf("Result2:\n%v\n\n", solve2(in))
+	fmt.Printf("Input:\n%v\n", ax.Debug(rows, 1))
+	fmt.Printf("Parsed:\n%v\n", ax.Debug(in.xs, 1))
 }

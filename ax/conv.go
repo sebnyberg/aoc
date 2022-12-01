@@ -6,6 +6,26 @@ import (
 	"golang.org/x/exp/constraints"
 )
 
+// Atoi aliases MustParseInt[int].
+func Atoi(s string) int {
+	return MustParseInt[int](s)
+}
+
+// Atou aliases MustParseInt[uint].
+func Atou(s string) uint {
+	return MustParseInt[uint](s)
+}
+
+// Atou16 aliases MustParseInt[uint].
+func Atou16(s string) uint16 {
+	return MustParseInt[uint16](s)
+}
+
+// Atof aliases MustParseFloat[float64].
+func Atof(s string) float64 {
+	return MustParseFloat[float64](s)
+}
+
 // MustParseInt parses the input string as an int with base-10.
 // If unsuccessful, the error will be logged followed by os.Exit(1).
 func MustParseInt[T constraints.Integer](s string) T {

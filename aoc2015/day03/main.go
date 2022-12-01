@@ -1,27 +1,17 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"os"
 
 	"github.com/sebnyberg/aoc/ax"
 )
 
-var sprint = fmt.Sprint
-var sprintf = fmt.Sprintf
-var toi = ax.MustParseInt[int]
-var tou = ax.MustParseInt[uint]
-var tof = ax.MustParseFloat[float64]
-var mini = ax.Min[int]
-var minf = ax.Min[float64]
-var minu = ax.Min[uint]
-
-func Solve1(rs []parsedRow) string {
+func solve1(in *input) string {
 	m := ax.Set[[2]int]{}
 	var x, y int
 	m.Add([2]int{x, y})
-	for _, s := range rs[0].s {
+	for _, s := range in.xs[0].s {
 		switch s {
 		case '^':
 			y++
@@ -34,18 +24,18 @@ func Solve1(rs []parsedRow) string {
 		}
 		m.Add([2]int{x, y})
 	}
-	return sprint(len(m))
+	return fmt.Sprint(len(m))
 }
 
-func Solve2(rs []parsedRow) string {
+func solve2(in *input) string {
 	m := ax.Set[[2]int]{}
 	var xy [2][2]int
 	x := 0
 	y := 1
 	m.Add([2]int{0, 0})
-	for i := 0; i < len(rs[0].s); i += 2 {
+	for i := 0; i < len(in.xs[0].s); i += 2 {
 		for j := 0; j < 2; j++ {
-			switch rs[0].s[i+j] {
+			switch in.xs[0].s[i+j] {
 			case '^':
 				xy[j][y]++
 			case 'v':
@@ -58,30 +48,33 @@ func Solve2(rs []parsedRow) string {
 			m.Add([2]int{xy[j][x], xy[j][y]})
 		}
 	}
-	return sprint(len(m))
+	return fmt.Sprint(len(m))
 }
 
-type parsedRow struct {
+type inputItem struct {
 	s string
 }
 
-func Parse(s string) parsedRow {
-	var r parsedRow
-	r.s = s
-	return r
+type input struct {
+	n  int
+	xs []inputItem
+}
+
+func (p *input) parse(s string) {
+	var x inputItem
+	x.s = s
+	p.xs = append(p.xs, x)
+	p.n++
 }
 
 func main() {
-	sc := bufio.NewScanner(os.Stdin)
-	var p ax.Problem[parsedRow]
-	p.HeadN = 3
-	p.TailN = 3
-	for sc.Scan() {
-		s := sc.Text()
-		p.Input = append(p.Input, s)
-		p.Parsed = append(p.Parsed, Parse(s))
+	in := new(input)
+	rows := ax.ReadLines(os.Stdin)
+	for _, s := range rows {
+		in.parse(s)
 	}
-	p.Result1 = Solve1(p.Parsed)
-	p.Result2 = Solve2(p.Parsed)
-	fmt.Fprint(os.Stdout, p)
+	fmt.Printf("Result1:\n%v\n", solve1(in))
+	fmt.Printf("Result2:\n%v\n\n", solve2(in))
+	fmt.Printf("Input:\n%v\n", ax.Debug(rows, 1))
+	fmt.Printf("Parsed:\n%v\n", ax.Debug(in.xs, 1))
 }

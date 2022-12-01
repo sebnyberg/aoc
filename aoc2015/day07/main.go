@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"os"
 	"regexp"
@@ -9,47 +8,8 @@ import (
 	"github.com/sebnyberg/aoc/ax"
 )
 
-var absf = ax.Abs[float64]
-var absi = ax.Abs[int]
-var minf = ax.Min[float64]
-var mini = ax.Min[int]
-var minu = ax.Min[uint16]
-var maxf = ax.Max[float64]
-var maxi = ax.Max[int]
-var maxu = ax.Max[uint16]
-var print = fmt.Print
-var printf = fmt.Printf
-var println = fmt.Println
-var sprint = fmt.Sprint
-var sprintf = fmt.Sprintf
-var sprintln = fmt.Sprintln
-var tof = ax.MustParseFloat[float64]
-var toi = ax.MustParseInt[int]
-var tou = ax.MustParseInt[uint16]
-
-func pprint(a ...any) {
-	fmtStr := "%+v"
-	for i := 1; i < len(a); i++ {
-		fmtStr += ",%+v"
-	}
-	fmt.Printf(fmtStr, a...)
-}
-func pprintln(a ...any) {
-	fmtStr := "%+v"
-	for i := 1; i < len(a); i++ {
-		fmtStr += ",%+v"
-	}
-	fmtStr += "\n"
-	fmt.Printf(fmtStr, a...)
-}
-
-var intr = regexp.MustCompile(`[1-9][0-9]*|0`)
-
-func isnum(s string) bool {
-	return intr.MatchString(s)
-}
-
-func Solve1(rs []parsedRow) string {
+func solve1(in *input) string {
+	rs := in.xs
 	type gate struct {
 		name   string
 		typ    string
@@ -75,9 +35,9 @@ func Solve1(rs []parsedRow) string {
 		switch r.op {
 		case opNot:
 			a := r.a.(string)
-			if isnum(a) {
+			if ax.IsInt(a) {
 				w := getWire(r.out)
-				w.value = ^tou(a)
+				w.value = ^ax.Atou16(a)
 				todos = append(todos, r.out)
 				continue
 			}
@@ -98,31 +58,31 @@ func Solve1(rs []parsedRow) string {
 				indeg: 2,
 			}
 			a := r.a.(string)
-			if isnum(a) {
+			if ax.IsInt(a) {
 				g.indeg--
-				g.inputs[0] = tou(a)
+				g.inputs[0] = ax.Atou16(a)
 			} else {
 				w := getWire(a)
 				w.gates = append(w.gates, g)
 				w.indices = append(w.indices, 0)
 			}
 			b := r.b.(string)
-			if isnum(b) {
+			if ax.IsInt(b) {
 				g.indeg--
-				g.inputs[1] = tou(b)
+				g.inputs[1] = ax.Atou16(b)
 			} else {
 				w := getWire(b)
 				w.gates = append(w.gates, g)
 				w.indices = append(w.indices, 1)
 			}
-			if isnum(a) && isnum(b) {
+			if ax.IsInt(a) && ax.IsInt(b) {
 				panic("hehe")
 			}
 		case opAssign:
 			a := r.a.(string)
-			if isnum(a) {
+			if ax.IsInt(a) {
 				w := getWire(r.out)
-				w.value = tou(a)
+				w.value = ax.Atou16(a)
 				todos = append(todos, r.out)
 			} else {
 				g := &gate{
@@ -175,28 +135,33 @@ func Solve1(rs []parsedRow) string {
 		todos, next = next, todos
 	}
 
-	return sprint(wires["a"].value)
+	return fmt.Sprint(wires["a"].value)
 }
 
-func Solve2(rs []parsedRow) string {
-	rs2 := make([]parsedRow, len(rs))
-	copy(rs2, rs)
-	rs = rs2
-	for i := range rs {
-		if rs[i].op == opAssign && rs[i].out == "b" {
-			rs[i].a = Solve1(rs)
+func solve2(in *input) string {
+	xs2 := make([]inputItem, len(in.xs))
+	copy(xs2, in.xs)
+	in.xs = xs2
+	for i := range in.xs {
+		if in.xs[i].op == opAssign && in.xs[i].out == "b" {
+			in.xs[i].a = solve1(in)
 		}
 	}
-	res := Solve1(rs)
+	res := solve1(in)
 	return res
 }
 
-type parsedRow struct {
+type inputItem struct {
 	s   string
 	op  string
 	a   any
 	b   any
 	out string
+}
+
+type input struct {
+	n  int
+	xs []inputItem
 }
 
 var notr = regexp.MustCompile(`NOT (\w+) -> (\w+)`)
@@ -210,44 +175,45 @@ const opAnd = "AND"
 const opOr = "OR"
 const opAssign = "ASSIGN"
 
-func Parse(s string) parsedRow {
-	var r parsedRow
+func (p *input) parse(s string) {
+	var x inputItem
+
 	switch {
 	case notr.MatchString(s):
 		ss := notr.FindStringSubmatch(s)
-		r.op = opNot
-		r.a = ss[1]
-		r.out = ss[2]
-		r.s = sprintf("NOT %v", r.a)
+		x.op = opNot
+		x.a = ss[1]
+		x.out = ss[2]
+		x.s = fmt.Sprintf("NOT %v", x.a)
 	case bir.MatchString(s):
 		ss := bir.FindStringSubmatch(s)
-		r.op = ss[2]
-		r.a = any(ss[1])
-		r.b = any(ss[3])
-		r.out = ss[4]
-		r.s = sprintf("%v %v %v", r.a, r.op, r.b)
+		x.op = ss[2]
+		x.a = any(ss[1])
+		x.b = any(ss[3])
+		x.out = ss[4]
+		x.s = fmt.Sprintf("%v %v %v", x.a, x.op, x.b)
 	case assignr.MatchString(s):
 		ss := assignr.FindStringSubmatch(s)
-		r.op = opAssign
-		r.a = any(ss[1])
-		r.out = ss[2]
+		x.op = opAssign
+		x.a = any(ss[1])
+		x.out = ss[2]
 	default:
 		panic(s)
 	}
-	return r
+
+	x.s = s
+	p.xs = append(p.xs, x)
+	p.n++
 }
 
 func main() {
-	sc := bufio.NewScanner(os.Stdin)
-	var p ax.Problem[parsedRow]
-	p.HeadN = 3
-	p.TailN = 3
-	for sc.Scan() {
-		s := sc.Text()
-		p.Input = append(p.Input, s)
-		p.Parsed = append(p.Parsed, Parse(s))
+	in := new(input)
+	rows := ax.ReadLines(os.Stdin)
+	for _, s := range rows {
+		in.parse(s)
 	}
-	p.Result1 = Solve1(p.Parsed)
-	p.Result2 = Solve2(p.Parsed)
-	fmt.Fprint(os.Stdout, p)
+	fmt.Printf("Result1:\n%v\n", solve1(in))
+	fmt.Printf("Result2:\n%v\n\n", solve2(in))
+	fmt.Printf("Input:\n%v\n", ax.Debug(rows, 1))
+	fmt.Printf("Parsed:\n%v\n", ax.Debug(in.xs, 1))
 }

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"os"
 	"regexp"
@@ -9,47 +8,8 @@ import (
 	"github.com/sebnyberg/aoc/ax"
 )
 
-var absf = ax.Abs[float64]
-var absi = ax.Abs[int]
-var minf = ax.Min[float64]
-var mini = ax.Min[int]
-var minu = ax.Min[uint16]
-var maxf = ax.Max[float64]
-var maxi = ax.Max[int]
-var maxu = ax.Max[uint16]
-var print = fmt.Print
-var printf = fmt.Printf
-var println = fmt.Println
-var sprint = fmt.Sprint
-var sprintf = fmt.Sprintf
-var sprintln = fmt.Sprintln
-var tof = ax.MustParseFloat[float64]
-var toi = ax.MustParseInt[int]
-var tou = ax.MustParseInt[uint16]
-
-func pprint(a ...any) {
-	fmtStr := "%+v"
-	for i := 1; i < len(a); i++ {
-		fmtStr += ",%+v"
-	}
-	fmt.Printf(fmtStr, a...)
-}
-func pprintln(a ...any) {
-	fmtStr := "%+v"
-	for i := 1; i < len(a); i++ {
-		fmtStr += ",%+v"
-	}
-	fmtStr += "\n"
-	fmt.Printf(fmtStr, a...)
-}
-
-var intr = regexp.MustCompile(`[1-9][0-9]*|0`)
-
-func isnum(s string) bool {
-	return intr.MatchString(s)
-}
-
-func Solve1(rs []parsedRow) string {
+func solve1(in *input) string {
+	rs := in.xs
 	var res int
 	var dfs func([5]int, int, int)
 	dfs = func(stats [5]int, rem, i int) {
@@ -57,9 +17,9 @@ func Solve1(rs []parsedRow) string {
 			if rem != 0 {
 				return
 			}
-			a := maxi(0, stats[0]) * maxi(0, stats[1]) *
-				maxi(0, stats[2]) * maxi(0, stats[3])
-			res = maxi(res, a)
+			a := ax.Max(0, stats[0]) * ax.Max(0, stats[1]) *
+				ax.Max(0, stats[2]) * ax.Max(0, stats[3])
+			res = ax.Max(res, a)
 			return
 		}
 		for x := 0; x <= rem; x++ {
@@ -79,20 +39,21 @@ func Solve1(rs []parsedRow) string {
 		}
 	}
 	dfs([5]int{}, 100, 0)
-	return sprint(res)
+	return fmt.Sprint(res)
 }
 
-func Solve2(rs []parsedRow) string {
+func solve2(in *input) string {
 	var res int
+	rs := in.xs
 	var dfs func([5]int, int, int)
 	dfs = func(stats [5]int, rem, i int) {
 		if i == len(rs) {
 			if rem != 0 || stats[4] != 500 {
 				return
 			}
-			a := maxi(0, stats[0]) * maxi(0, stats[1]) *
-				maxi(0, stats[2]) * maxi(0, stats[3])
-			res = maxi(res, a)
+			a := ax.Max(0, stats[0]) * ax.Max(0, stats[1]) *
+				ax.Max(0, stats[2]) * ax.Max(0, stats[3])
+			res = ax.Max(res, a)
 			return
 		}
 		for x := 0; x <= rem; x++ {
@@ -110,10 +71,10 @@ func Solve2(rs []parsedRow) string {
 		}
 	}
 	dfs([5]int{}, 100, 0)
-	return sprint(res)
+	return fmt.Sprint(res)
 }
 
-type parsedRow struct {
+type inputItem struct {
 	s          string
 	name       string
 	capacity   int
@@ -123,32 +84,35 @@ type parsedRow struct {
 	calories   int
 }
 
+type input struct {
+	n  int
+	xs []inputItem
+}
+
 var rrr = regexp.MustCompile(`(\w+): capacity (-?\d+), durability (-?\d+), flavor (-?\d+), texture (-?\d+), calories (-?\d+)`)
 
-func Parse(s string) parsedRow {
-	var r parsedRow
-	// r.s = s
+func (p *input) parse(s string) {
+	var x inputItem
 	ss := rrr.FindStringSubmatch(s)
-	r.name = ss[1]
-	r.capacity = toi(ss[2])
-	r.durability = toi(ss[3])
-	r.flavour = toi(ss[4])
-	r.texture = toi(ss[5])
-	r.calories = toi(ss[6])
-	return r
+	x.name = ss[1]
+	x.capacity = ax.Atoi(ss[2])
+	x.durability = ax.Atoi(ss[3])
+	x.flavour = ax.Atoi(ss[4])
+	x.texture = ax.Atoi(ss[5])
+	x.calories = ax.Atoi(ss[6])
+	p.xs = append(p.xs, x)
+	x.s = s
+	p.n++
 }
 
 func main() {
-	sc := bufio.NewScanner(os.Stdin)
-	var p ax.Problem[parsedRow]
-	p.HeadN = 3
-	p.TailN = 3
-	for sc.Scan() {
-		s := sc.Text()
-		p.Input = append(p.Input, s)
-		p.Parsed = append(p.Parsed, Parse(s))
+	in := new(input)
+	rows := ax.ReadLines(os.Stdin)
+	for _, s := range rows {
+		in.parse(s)
 	}
-	p.Result1 = Solve1(p.Parsed)
-	p.Result2 = Solve2(p.Parsed)
-	fmt.Fprint(os.Stdout, p)
+	fmt.Printf("Result1:\n%v\n", solve1(in))
+	fmt.Printf("Result2:\n%v\n\n", solve2(in))
+	fmt.Printf("Input:\n%v\n", ax.Debug(rows, 1))
+	fmt.Printf("Parsed:\n%v\n", ax.Debug(in.xs, 1))
 }

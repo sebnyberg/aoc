@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"os"
 	"strings"
@@ -9,19 +8,7 @@ import (
 	"github.com/sebnyberg/aoc/ax"
 )
 
-var print = fmt.Print
-var printf = fmt.Printf
-var println = fmt.Println
-var sprint = fmt.Sprint
-var sprintf = fmt.Sprintf
-var toi = ax.MustParseInt[int]
-var tou = ax.MustParseInt[uint]
-var tof = ax.MustParseFloat[float64]
-var mini = ax.Min[int]
-var minf = ax.Min[float64]
-var minu = ax.Min[uint]
-
-func Solve1(rs []parsedRow) string {
+func solve1(in *input) string {
 	illegal := map[string]bool{
 		"ab": true,
 		"cd": true,
@@ -48,13 +35,13 @@ func Solve1(rs []parsedRow) string {
 		return 0
 	}
 	var res int
-	for i := range rs {
-		res += nice(rs[i].s)
+	for _, x := range in.xs {
+		res += nice(x.s)
 	}
-	return sprint(res)
+	return fmt.Sprint(res)
 }
 
-func Solve2(rs []parsedRow) string {
+func solve2(in *input) string {
 	nice := func(s string) int {
 		n := len(s)
 		var ok bool
@@ -90,14 +77,14 @@ func Solve2(rs []parsedRow) string {
 	var res int
 	k := 5
 	kk := 5
-	for i := range rs {
-		x := nice(rs[i].s)
+	for i := range in.xs {
+		x := nice(in.xs[i].s)
 		if x == 0 && k > 0 {
-			println("not ok", rs[i].s)
+			println("not ok", in.xs[i].s)
 			k--
 		}
 		if x == 1 && kk > 0 {
-			println("ok", rs[i].s)
+			println("ok", in.xs[i].s)
 			kk--
 		}
 		if k > 0 {
@@ -105,30 +92,33 @@ func Solve2(rs []parsedRow) string {
 		}
 		res += x
 	}
-	return sprint(res)
+	return fmt.Sprint(res)
 }
 
-type parsedRow struct {
+type inputItem struct {
 	s string
 }
 
-func Parse(s string) parsedRow {
-	var r parsedRow
-	r.s = s
-	return r
+type input struct {
+	n  int
+	xs []inputItem
+}
+
+func (p *input) parse(s string) {
+	var x inputItem
+	x.s = s
+	p.xs = append(p.xs, x)
+	p.n++
 }
 
 func main() {
-	sc := bufio.NewScanner(os.Stdin)
-	var p ax.Problem[parsedRow]
-	p.HeadN = 3
-	p.TailN = 3
-	for sc.Scan() {
-		s := sc.Text()
-		p.Input = append(p.Input, s)
-		p.Parsed = append(p.Parsed, Parse(s))
+	in := new(input)
+	rows := ax.ReadLines(os.Stdin)
+	for _, s := range rows {
+		in.parse(s)
 	}
-	p.Result1 = Solve1(p.Parsed)
-	p.Result2 = Solve2(p.Parsed)
-	fmt.Fprint(os.Stdout, p)
+	fmt.Printf("Result1:\n%v\n", solve1(in))
+	fmt.Printf("Result2:\n%v\n\n", solve2(in))
+	fmt.Printf("Input:\n%v\n", ax.Debug(rows, 1))
+	fmt.Printf("Parsed:\n%v\n", ax.Debug(in.xs, 1))
 }
