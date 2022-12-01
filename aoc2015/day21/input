@@ -1,0 +1,19 @@
+Hit Points: 100
+Damage: 8
+Armor: 2
+W Dagger        8     4       0
+W Shortsword   10     5       0
+W Warhammer    25     6       0
+W Longsword    40     7       0
+W Greataxe     74     8       0
+A Leather      13     0       1
+A Chainmail    31     0       2
+A Splintmail   53     0       3
+A Bandedmail   75     0       4
+A Platemail   102     0       5
+R Damage +1    25     1       0
+R Damage +2    50     2       0
+R Damage +3   100     3       0
+R Defense +1   20     0       1
+R Defense +2   40     0       2
+R Defense +3   80     0       3
