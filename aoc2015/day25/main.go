@@ -2,10 +2,7 @@ package main
 
 import (
 	"fmt"
-	"regexp"
 )
-
-var pat = regexp.MustCompile(``)
 
 func solve1(inf string) string {
 	wantRow := 3010 - 1
