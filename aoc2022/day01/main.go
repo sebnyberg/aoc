@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 	"sort"
 
@@ -10,9 +11,8 @@ import (
 
 func main() {
 	sc := bufio.NewScanner(os.Stdin)
-	cals := []int{0}
-	for sc.Scan() {
-		s := sc.Text()
+	var cals []int
+	for _, s := range ax.MustReadFileLines("input") {
 		if s == "" {
 			cals = append(cals, 0)
 			continue
@@ -20,5 +20,5 @@ func main() {
 		cals[len(cals)-1] += ax.MustParseInt[int](s)
 	}
 	sort.Ints(cals)
-	println(ax.Sum(cals[len(cals)-3:]))
+	fmt.Println(ax.Sum(cals[len(cals)-3:]))
 }

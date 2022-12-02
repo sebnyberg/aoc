@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/sebnyberg/aoc/ax"
 )
@@ -19,8 +18,7 @@ const (
 	win  = 6
 )
 
-func solve1(rows []string) string {
-	var score int
+func solve1() string {
 	scores := map[string]int{
 		// Opponent chooses Rock
 		"A X": rock + draw,
@@ -37,15 +35,14 @@ func solve1(rows []string) string {
 		"C Y": paper + loss,
 		"C Z": scissors + draw,
 	}
-	for _, row := range rows {
+	var score int
+	for _, row := range ax.MustReadFileLines("input") {
 		score += scores[row]
 	}
-
 	return fmt.Sprint(score)
 }
 
-func solve2(rows []string) string {
-	var score int
+func solve2() string {
 	scores := map[string]int{
 		// Opponent chooses Rock
 		"A X": loss + scissors,
@@ -62,16 +59,14 @@ func solve2(rows []string) string {
 		"C Y": draw + scissors,
 		"C Z": win + rock,
 	}
-	for _, row := range rows {
+	var score int
+	for _, row := range ax.MustReadFileLines("input") {
 		score += scores[row]
 	}
-
 	return fmt.Sprint(score)
 }
 
 func main() {
-	f, _ := os.Open("input")
-	rows := ax.ReadLines(f)
-	fmt.Printf("Result1:\n%v\n", solve1(rows))
-	fmt.Printf("Result2:\n%v\n\n", solve2(rows))
+	fmt.Printf("Result1:\n%v\n", solve1())
+	fmt.Printf("Result2:\n%v\n\n", solve2())
 }
