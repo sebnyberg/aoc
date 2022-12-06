@@ -1,0 +1,30 @@
+cpy a d
+cpy 14 c
+cpy 182 b
+inc d
+dec b
+jnz b -2
+dec c
+jnz c -5
+cpy d a // loop 1
+jnz 0 0 // loop 2
+cpy a b
+cpy 0 a
+cpy 2 c
+jnz b 2
+jnz 1 6
+dec b
+dec c
+jnz c -4
+inc a
+jnz 1 -7
+cpy 2 b // b = 2
+jnz c 2
+jnz 1 4 // jump to out
+dec b
+dec c
+jnz 1 -4
+jnz 0 0
+out b
+jnz a -19 // loop 2
+jnz 1 -21 // loop 1
