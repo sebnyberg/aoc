@@ -2,13 +2,11 @@ package main
 
 import (
 	"fmt"
-	"regexp"
+	"sort"
 	"strings"
 
 	"github.com/sebnyberg/aoc/ax"
 )
-
-var pat = regexp.MustCompile(``)
 
 type monkey struct {
 	idx           int
@@ -16,11 +14,10 @@ type monkey struct {
 	items         []int
 	op            func(int) int
 	mod           int
-	trueTarget    int
-	falseTarget   int
+	next          map[bool]int
 }
 
-func solve1(inf string) any {
+func solve(inf string, div, nrounds int) any {
 	lines := ax.MustReadFileLines(inf)
 	var ms []monkey
 	for i := 0; i < len(lines); i += 7 {
@@ -47,34 +44,42 @@ func solve1(inf string) any {
 			}
 		}
 		m.mod = ax.Atoi(strings.Fields(lines[i+3])[3])
-		m.trueTarget = ax.Atoi(strings.Fields(lines[i+4])[5])
-		m.falseTarget = ax.Atoi(strings.Fields(lines[i+5])[5])
+		m.next = make(map[bool]int, 2)
+		m.next[true] = ax.Atoi(strings.Fields(lines[i+4])[5])
+		m.next[false] = ax.Atoi(strings.Fields(lines[i+5])[5])
 		ms = append(ms, m)
 	}
 	count := make(map[int]int)
 
-	for round := 0; round < 20; round++ {
-		for i, m := range ms {
-			for _, x := range m.items {
+	mod := 1
+	for _, m := range ms {
+		mod *= m.mod
+	}
+
+	for round := 0; round < nrounds; round++ {
+		for i := range ms {
+			for _, x := range ms[i].items {
 				count[i]++
-				x = m.op(x) / 3
+				x = (ms[i].op(x) / div) % mod
 				var j int
-				if x%m.mod == 0 {
-					j = m.trueTarget
-				} else {
-					j = m.falseTarget
-				}
-				// fmt.Printf("mokey %v throws item %v to %v\n", i, x, j)
+				j = ms[i].next[x%ms[i].mod == 0]
 				ms[j].items = append(ms[j].items, x)
 			}
 			ms[i].items = ms[i].items[:0]
 		}
 	}
-	fmt.Println(count)
-	return ""
+	var counts []int
+	for _, c := range count {
+		counts = append(counts, c)
+	}
+
+	sort.Ints(counts)
+	k := len(counts)
+	return counts[k-1] * counts[k-2]
 }
 
 func main() {
 	f := "input"
-	fmt.Printf("Result1:\n%v\n", solve1(f))
+	fmt.Printf("Result1:\n%v\n", solve(f, 3, 20))
+	fmt.Printf("Result2:\n%v\n", solve(f, 1, 10000))
 }
