@@ -8,8 +8,6 @@ import (
 	"github.com/sebnyberg/aoc/ax"
 )
 
-var pat = regexp.MustCompile(``)
-
 func solve1(inf string) any {
 	lines := ax.MustReadFileLines(inf)
 	var res int
@@ -60,27 +58,27 @@ func (n *listNode) islist() bool {
 	return !n.isval
 }
 
-func (left *listNode) cmp(right *listNode) int {
-	if left.isval || right.isval {
-		if left.isval && right.isval {
-			return left.val - right.val
+func (l *listNode) cmp(r *listNode) int {
+	if l.isval || r.isval {
+		if l.isval && r.isval {
+			return l.val - r.val
 		}
-		if right.isval {
-			a := &listNode{list: []*listNode{right}}
-			return left.cmp(a)
+		if r.isval {
+			r = &listNode{list: []*listNode{r}}
+			return l.cmp(r)
 		}
-		a := &listNode{list: []*listNode{left}}
-		return a.cmp(right)
+		l = &listNode{list: []*listNode{l}}
+		return l.cmp(r)
 	}
 
-	n := ax.Min(len(left.list), len(right.list))
+	n := ax.Min(len(l.list), len(r.list))
 	for i := 0; i < n; i++ {
-		d := left.list[i].cmp(right.list[i])
+		d := l.list[i].cmp(r.list[i])
 		if d != 0 {
 			return d
 		}
 	}
-	return len(left.list) - len(right.list)
+	return len(l.list) - len(r.list)
 }
 
 func parseList(s string) *listNode {
