@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"regexp"
+	"sort"
 
 	"github.com/sebnyberg/aoc/ax"
 )
@@ -15,8 +16,35 @@ func solve1(inf string) any {
 	for k := 0; k*3 < len(lines); k++ {
 		left := parseList(lines[k*3])
 		right := parseList(lines[k*3+1])
-		if left.less(right) {
+		d := left.cmp(right)
+		if d <= 0 {
 			res += (k + 1)
+		}
+	}
+	return res
+}
+
+func solve2(inf string) any {
+	lines := ax.MustReadFileLines(inf)
+	var packets []*listNode
+	for k := 0; k*3 < len(lines); k++ {
+		packets = append(packets, parseList(lines[k*3]))
+		packets = append(packets, parseList(lines[k*3+1]))
+	}
+	packets = append(packets, parseList("[[2]]"))
+	packets = append(packets, parseList("[[6]]"))
+	n := len(packets)
+	idx := make([]int, n)
+	for i := range idx {
+		idx[i] = i
+	}
+	sort.Slice(idx, func(i, j int) bool {
+		return packets[idx[i]].cmp(packets[idx[j]]) <= 0
+	})
+	res := 1
+	for _, i := range idx {
+		if idx[i] >= n-2 {
+			res *= (i + 1)
 		}
 	}
 	return res
@@ -32,26 +60,27 @@ func (n *listNode) islist() bool {
 	return !n.isval
 }
 
-func (left *listNode) less(right *listNode) bool {
+func (left *listNode) cmp(right *listNode) int {
 	if left.isval || right.isval {
 		if left.isval && right.isval {
-			return left.val <= right.val
+			return left.val - right.val
 		}
 		if right.isval {
 			a := &listNode{list: []*listNode{right}}
-			return left.less(a)
+			return left.cmp(a)
 		}
 		a := &listNode{list: []*listNode{left}}
-		return a.less(right)
+		return a.cmp(right)
 	}
 
 	n := ax.Min(len(left.list), len(right.list))
 	for i := 0; i < n; i++ {
-		if !left.list[i].less(right.list[i]) {
-			return false
+		d := left.list[i].cmp(right.list[i])
+		if d != 0 {
+			return d
 		}
 	}
-	return len(left.list) <= len(right.list)
+	return len(left.list) - len(right.list)
 }
 
 func parseList(s string) *listNode {
@@ -94,4 +123,5 @@ func parseList(s string) *listNode {
 func main() {
 	f := "input"
 	fmt.Printf("Result1:\n%v\n", solve1(f))
+	fmt.Printf("Result2:\n%v\n", solve2(f))
 }

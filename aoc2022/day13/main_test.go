@@ -26,7 +26,8 @@ func Test_less(t *testing.T) {
 		t.Run(fmt.Sprint(i, tc.s1, tc.s2), func(t *testing.T) {
 			l1 := parseList(tc.s1)
 			l2 := parseList(tc.s2)
-			require.Equal(t, tc.want, l1.less(l2))
+			d := l1.cmp(l2)
+			require.Equal(t, tc.want, d <= 0)
 		})
 	}
 }
