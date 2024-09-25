@@ -1,4 +1,4 @@
-# :santa: :christmas_tree: Advent of Code in Go :santa: :christmas_tree:
+# :santa: :christmas_tree: Advent of Code in Go :christmas_tree: :santa:
 
 Advent of Code solutions in Go.
 
