@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"regexp"
 	"sort"
 
 	"github.com/sebnyberg/aoc/ax"

@@ -2,14 +2,6 @@ package main
 
 import (
 	"fmt"
-
-	"github.com/sebnyberg/aoc/ax"
-)
-
-package main
-
-import (
-	"fmt"
 	"math"
 	"regexp"
 	"strconv"

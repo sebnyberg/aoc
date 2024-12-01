@@ -1,16 +1,13 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"os"
 	"sort"
 
 	"github.com/sebnyberg/aoc/ax"
 )
 
 func main() {
-	sc := bufio.NewScanner(os.Stdin)
 	var cals []int
 	for _, s := range ax.MustReadFileLines("input") {
 		if s == "" {
