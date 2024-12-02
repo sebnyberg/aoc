@@ -1,9 +1,10 @@
 package day19
 
 import (
-	"aoc/ax"
 	"sync"
 	"testing"
+
+	"github.com/sebnyberg/aoc/ax"
 
 	"github.com/stretchr/testify/assert"
 )

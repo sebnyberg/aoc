@@ -2,6 +2,13 @@ package ax
 
 import "golang.org/x/exp/constraints"
 
+func MinMax[T constraints.Ordered](a, b T) (T, T) {
+	if a < b {
+		return a, b
+	}
+	return b, a
+}
+
 func Min[T constraints.Ordered](a, b T) T {
 	if a < b {
 		return a

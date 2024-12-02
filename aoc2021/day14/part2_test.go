@@ -1,10 +1,11 @@
 package day14
 
 import (
-	"aoc/ax"
 	"math"
 	"regexp"
 	"testing"
+
+	"github.com/sebnyberg/aoc/ax"
 
 	"github.com/stretchr/testify/assert"
 )

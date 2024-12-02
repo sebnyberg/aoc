@@ -1,10 +1,11 @@
 package day15
 
 import (
-	"aoc/ax"
 	"container/heap"
 	"math"
 	"testing"
+
+	"github.com/sebnyberg/aoc/ax"
 
 	"github.com/stretchr/testify/assert"
 )

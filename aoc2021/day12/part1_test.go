@@ -1,11 +1,12 @@
 package day12
 
 import (
-	"aoc/ax"
 	"strconv"
 	"strings"
 	"testing"
 	"unicode"
+
+	"github.com/sebnyberg/aoc/ax"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -34,7 +35,7 @@ func Part1(rows []string) string {
 			return
 		}
 		strToIdx[a] = pos
-		if ax.Is(a, unicode.IsLower) {
+		if ax.StringIsFunc(a, unicode.IsLower) {
 			smallCave = append(smallCave, true)
 		} else {
 			smallCave = append(smallCave, false)

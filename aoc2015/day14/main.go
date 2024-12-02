@@ -34,6 +34,7 @@ func solve1(in *input) string {
 }
 
 func solve2(in *input) string {
+	rs := in.xs
 	n := len(rs)
 	pos := make([]int, n)
 	points := make([]int, n)

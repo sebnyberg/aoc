@@ -2,13 +2,10 @@ package main
 
 import (
 	"fmt"
-	"regexp"
 	"strings"
 
 	"github.com/sebnyberg/aoc/ax"
 )
-
-var pat = regexp.MustCompile(``)
 
 func solve1(inf string) any {
 	lines := ax.MustReadFileLines(inf)
@@ -68,13 +65,6 @@ outer:
 		}
 	}
 	return res
-}
-
-func abs(a int) int {
-	if a < 0 {
-		return -a
-	}
-	return a
 }
 
 func main() {

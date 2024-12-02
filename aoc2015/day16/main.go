@@ -51,7 +51,7 @@ func solve2(rs *input) string {
 		want[a[0]] = ax.Atoi(a[1])
 	}
 	res := -1
-	for _, aunt := range rs {
+	for _, aunt := range rs.xs {
 		ok := true
 		for prop, c := range aunt.props {
 			if prop == "trees" || prop == "cats" {

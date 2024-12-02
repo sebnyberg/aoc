@@ -1,13 +1,14 @@
 package day24
 
 import (
-	"aoc/ax"
 	"context"
 	"regexp"
 	"strconv"
 	"strings"
 	"sync"
 	"sync/atomic"
+
+	"github.com/sebnyberg/aoc/ax"
 
 	"go.uber.org/zap"
 )

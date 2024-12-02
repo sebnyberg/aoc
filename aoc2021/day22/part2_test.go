@@ -1,10 +1,11 @@
 package day22
 
 import (
-	"aoc/ax"
 	"regexp"
 	"sort"
 	"testing"
+
+	"github.com/sebnyberg/aoc/ax"
 
 	"github.com/stretchr/testify/assert"
 )

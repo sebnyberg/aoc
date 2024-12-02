@@ -1,9 +1,10 @@
 package day18
 
 import (
-	"aoc/ax"
 	"fmt"
 	"testing"
+
+	"github.com/sebnyberg/aoc/ax"
 
 	"github.com/stretchr/testify/require"
 )

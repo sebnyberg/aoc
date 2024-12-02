@@ -1,10 +1,11 @@
 package day20
 
 import (
-	"aoc/ax"
 	"fmt"
 	"math"
 	"testing"
+
+	"github.com/sebnyberg/aoc/ax"
 
 	"github.com/stretchr/testify/assert"
 )

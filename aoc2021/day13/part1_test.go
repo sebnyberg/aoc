@@ -1,11 +1,12 @@
 package day13
 
 import (
-	"aoc/ax"
 	"regexp"
 	"strconv"
 	"strings"
 	"testing"
+
+	"github.com/sebnyberg/aoc/ax"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -63,5 +64,5 @@ func Part1(rows []string) string {
 		}
 	}
 
-	return strconv.Itoa(len(ax.MapSet(points)))
+	return strconv.Itoa(len(ax.SliceToMapSet(points)))
 }

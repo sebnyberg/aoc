@@ -1,10 +1,11 @@
 package day04
 
 import (
-	"aoc/ax"
 	"strconv"
 	"strings"
 	"testing"
+
+	"github.com/sebnyberg/aoc/ax"
 
 	"github.com/stretchr/testify/assert"
 )

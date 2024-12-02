@@ -35,7 +35,7 @@ func solve1(in *input) string {
 	return fmt.Sprint(res)
 }
 
-func ssolve2(in *input) string {
+func solve2(in *input) string {
 	rs := in.xs
 	m := len(rs)
 	minContainers := math.MaxInt32

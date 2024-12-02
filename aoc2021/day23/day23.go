@@ -1,9 +1,10 @@
 package day23
 
 import (
-	"aoc/ax"
 	"fmt"
 	"strings"
+
+	"github.com/sebnyberg/aoc/ax"
 )
 
 // The stateEnergy at a given point in time is the combination of locked rooms,
@@ -29,12 +30,21 @@ type state struct {
 	hallway string
 }
 
+func IsExactly(s string, ch rune) bool {
+	for _, c := range s {
+		if c != ch {
+			return false
+		}
+	}
+	return true
+}
+
 func (s stateEnergy) valid() bool {
-	return ax.IsExactly(s.hallway, '.') &&
-		ax.IsExactly(s.rooms[0], 'A') &&
-		ax.IsExactly(s.rooms[1], 'B') &&
-		ax.IsExactly(s.rooms[2], 'C') &&
-		ax.IsExactly(s.rooms[3], 'D')
+	return IsExactly(s.hallway, '.') &&
+		IsExactly(s.rooms[0], 'A') &&
+		IsExactly(s.rooms[1], 'B') &&
+		IsExactly(s.rooms[2], 'C') &&
+		IsExactly(s.rooms[3], 'D')
 }
 
 func (s stateEnergy) String() string {

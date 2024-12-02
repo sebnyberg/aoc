@@ -1,10 +1,11 @@
 package day18
 
 import (
-	"aoc/ax"
 	"fmt"
 	"strings"
 	"testing"
+
+	"github.com/sebnyberg/aoc/ax"
 
 	"github.com/stretchr/testify/assert"
 )

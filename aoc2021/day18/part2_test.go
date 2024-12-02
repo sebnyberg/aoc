@@ -1,8 +1,9 @@
 package day18
 
 import (
-	"aoc/ax"
 	"testing"
+
+	"github.com/sebnyberg/aoc/ax"
 )
 
 var day18part2res int

@@ -1,8 +1,9 @@
 package day25
 
 import (
-	"aoc/ax"
 	"testing"
+
+	"github.com/sebnyberg/aoc/ax"
 
 	"github.com/stretchr/testify/assert"
 )

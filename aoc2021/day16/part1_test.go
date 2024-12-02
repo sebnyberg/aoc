@@ -1,9 +1,10 @@
 package day16
 
 import (
-	"aoc/ax"
 	"encoding/hex"
 	"testing"
+
+	"github.com/sebnyberg/aoc/ax"
 
 	"github.com/stretchr/testify/assert"
 )

@@ -1,11 +1,12 @@
 package day19
 
 import (
-	"aoc/ax"
 	"fmt"
 	"math"
 	"sort"
 	"strings"
+
+	"github.com/sebnyberg/aoc/ax"
 )
 
 type vectorHash uint64

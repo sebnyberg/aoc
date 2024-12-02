@@ -1,8 +1,9 @@
 package day24
 
 import (
-	"aoc/ax"
 	"strings"
+
+	"github.com/sebnyberg/aoc/ax"
 )
 
 type pairCond struct {

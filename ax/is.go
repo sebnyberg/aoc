@@ -1,11 +1,8 @@
 package ax
 
 import (
-	"regexp"
 	"unicode"
 )
-
-var isIntPat = regexp.MustCompile(`[1-9][0-9]*|0`)
 
 // IsInt returns whether the string is a valid integer.
 func IsInt(s string) bool {

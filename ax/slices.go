@@ -23,22 +23,6 @@ func Sum[S ~[]T, T constraints.Ordered](a S) T {
 	return sum
 }
 
-// Map maps a slice to a new slice using a function f.
-func Map[T any, U any](a []T, f func(T) U) []U {
-	res := make([]U, len(a))
-	for i := range a {
-		res[i] = f(a[i])
-	}
-	return res
-}
-
-// ForEach calls the function for each element in the slice
-func ForEach[S ~[]T, T any](a S, f func(T)) {
-	for i := range a {
-		f(a[i])
-	}
-}
-
 // Head returns the top n items in the slice.
 func Head[T any](a []T, n int) []T {
 	if n > len(a) {
@@ -55,11 +39,11 @@ func Tail[T any](a []T, n int) []T {
 	return a[len(a)-n:]
 }
 
-// MapInplace does an in-place mapping of elements. This function should not be
-// used - it exists merely as a signal that .Map is not actually an in-place
-// operation.
-func MapInplace[S ~[]T, T any](a S, f func(T) T) {
-	for i := range a {
-		a[i] = f(a[i])
+// SliceToMapSet converts a slice to a map
+func SliceToMapSet[S ~[]T, T comparable](a S) map[T]struct{} {
+	m := make(map[T]struct{}, len(a))
+	for _, x := range a {
+		m[x] = struct{}{}
 	}
+	return m
 }
