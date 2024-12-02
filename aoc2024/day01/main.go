@@ -2,14 +2,11 @@ package main
 
 import (
 	"fmt"
-	"regexp"
 	"sort"
 	"strings"
 
 	"github.com/sebnyberg/aoc/ax"
 )
-
-var pat = regexp.MustCompile(``)
 
 func solve1(inf string) any {
 	lines := ax.MustReadFileLines(inf)
