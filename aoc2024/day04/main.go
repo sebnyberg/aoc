@@ -2,14 +2,9 @@ package main
 
 import (
 	"fmt"
-	"regexp"
 
 	"github.com/sebnyberg/aoc/ax"
 )
-
-var mulpat = regexp.MustCompile(`mul\((\d{1,3}),(\d{1,3})\)`)
-var dopat = regexp.MustCompile(`do\(\)`)
-var dontpat = regexp.MustCompile(`don't\(\)`)
 
 func reverse(s string) string {
 	bs := []byte(s)
