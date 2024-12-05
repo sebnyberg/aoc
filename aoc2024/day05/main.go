@@ -9,96 +9,79 @@ import (
 
 func solve1(inf string) any {
 	lines := ax.MustReadFileLines(inf)
-	var j int
+
 	edges := make(map[[2]int]struct{})
-	for i, l := range lines {
-		if l == "" {
-			j = i + 1
-			break
-		}
-		parts := strings.Split(l, "|")
+	for lines[0] != "" {
+		parts := strings.Split(lines[0], "|")
 		a := ax.MustParseInt[int](parts[0])
 		b := ax.MustParseInt[int](parts[1])
 		edges[[2]int{a, b}] = struct{}{}
+		lines = lines[1:] // pop current line
 	}
+	lines = lines[1:] // pop current line
 
 	var res int
 outer:
-	for _, l := range lines[j:] {
-		var updatePages []int
+	for _, l := range lines {
+		var pages []int
 		for _, x := range strings.Split(l, ",") {
-			updatePages = append(updatePages, ax.MustParseInt[int](x))
+			pages = append(pages, ax.MustParseInt[int](x))
 		}
-		for i := 0; i < len(updatePages)-1; i++ {
-			for j := i + 1; j < len(updatePages); j++ {
-				a := updatePages[i]
-				b := updatePages[j]
+		for i := 0; i < len(pages)-1; i++ {
+			for j := i + 1; j < len(pages); j++ {
+				a := pages[i]
+				b := pages[j]
 				if _, exists := edges[[2]int{b, a}]; exists {
 					continue outer
 				}
 			}
 		}
-		res += updatePages[len(updatePages)/2]
+		res += pages[len(pages)/2]
 	}
 	return res
 }
 
 func solve2(inf string) any {
 	lines := ax.MustReadFileLines(inf)
-	var j int
 
-	indeg := make(map[int]int)
-	adj := make(map[int][]int)
+	// Capture edges
 	edges := make(map[[2]int]struct{})
-	for i, l := range lines {
-		if l == "" {
-			j = i + 1
-			break
-		}
-		parts := strings.Split(l, "|")
+	for lines[0] != "" {
+		parts := strings.Split(lines[0], "|")
 		a := ax.MustParseInt[int](parts[0])
 		b := ax.MustParseInt[int](parts[1])
-		indeg[b]++
-		adj[a] = append(adj[a], b)
 		edges[[2]int{a, b}] = struct{}{}
+		lines = lines[1:] // pop current line
 	}
-	ok := func(a []int) bool {
-		for i := range a {
-			for j := i + 1; j < len(a); j++ {
-				if _, ok := edges[[2]int{a[j], a[i]}]; ok {
-					return false
-				}
-			}
-		}
-		return true
-	}
+	lines = lines[1:] // pop current line
 
-	var sort func(a []int) []int
-	sort = func(a []int) []int {
+	var sort func(a []int) (didSort bool)
+	sort = func(a []int) (didSort bool) {
 		for i := range a {
 			for j := i + 1; j < len(a); j++ {
 				if _, ok := edges[[2]int{a[j], a[i]}]; ok {
 					a[i], a[j] = a[j], a[i]
-					return sort(a)
+					sort(a)
+					return true
 				}
 			}
 		}
-		return a
+		return false
 	}
 
-	var res int
-	for _, l := range lines[j:] {
-		var updatePages []int
+	// Try-sort pages and add to result if sorterd
+	var result int
+	for _, l := range lines {
+		var pages []int
 		for _, x := range strings.Split(l, ",") {
-			updatePages = append(updatePages, ax.MustParseInt[int](x))
+			pages = append(pages, ax.MustParseInt[int](x))
 		}
-		if ok(updatePages) {
+		if !sort(pages) {
 			continue
 		}
-		sorted := sort(updatePages)
-		res += sorted[len(sorted)/2]
+		result += pages[len(pages)/2]
 	}
-	return res
+	return result
 }
 
 func main() {
