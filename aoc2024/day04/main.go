@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/sebnyberg/aoc/ax"
 )
@@ -14,119 +15,81 @@ func reverse(s string) string {
 	return string(bs)
 }
 
+func check(err error, msg string) {
+	if err != nil {
+		log.Fatalf("%v, %v\n", msg, err)
+	}
+}
+
 func solve1(inf string) any {
 	lines := ax.MustReadFileLines(inf)
 	m := len(lines)
 	n := len(lines[0])
 
-	// reverse
-	rev := make([]string, m)
+	var directions = [][2]int{
+		{-1, -1}, {-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1},
+	}
+	directionMatch := func(i, j, di, dj int) int {
+		for _, ch := range "XMAS" {
+			if i < 0 || j < 0 || i >= m || j >= n || // bounds check
+				lines[i][j] != byte(ch) {
+				return 0
+			}
+			i += di
+			j += dj
+		}
+		return 1
+	}
+
+	// find "XMAS"
+	var result int
 	for i := range lines {
-		rev[i] = reverse(lines[i])
-	}
-
-	// downward
-	downward := make([]string, n)
-	for i := range lines[0] {
-		for j := range lines {
-			downward[i] += string(lines[j][i])
-		}
-	}
-
-	getDiag := func(ss []string) []string {
-		var res []string
-		for j := range ss[0] {
-			res = append(res, "")
-			mm := len(res) - 1
-			for k := 0; j+k < n && k < m; k++ {
-				res[mm] += string(ss[k][j+k])
+		for j := range lines[i] {
+			for _, dir := range directions {
+				result += directionMatch(i, j, dir[0], dir[1])
 			}
 		}
-		for i := 1; i < m; i++ {
-			res = append(res, "")
-			mm := len(res) - 1
-			for k := 0; i+k < m && k < n; k++ {
-				res[mm] += string(ss[i+k][k])
-			}
-		}
-		return res
 	}
-
-	countMatches := func(ss []string, word string) int {
-		var count int
-		for i := range ss {
-			for j := range ss[i] {
-				if len(ss[i][j:]) < len(word) {
-					break
-				}
-				if ss[i][j:j+4] == word {
-					count++
-				}
-			}
-		}
-		return count
-	}
-
-	// diagonals
-	diagfwd := getDiag(lines)
-	diagBack := getDiag(rev)
-
-	var res int
-	res += countMatches(lines, "XMAS")
-	res += countMatches(lines, "SAMX")
-	res += countMatches(downward, "XMAS")
-	res += countMatches(downward, "SAMX")
-	res += countMatches(diagfwd, "XMAS")
-	res += countMatches(diagfwd, "SAMX")
-	res += countMatches(diagBack, "XMAS")
-	res += countMatches(diagBack, "SAMX")
-	return res
+	return result
 }
 
 func solve2(inf string) any {
 	lines := ax.MustReadFileLines(inf)
-	m := len(lines)
-	n := len(lines[0])
 
-	// reverse
-	rev := make([]string, m)
-	for i := range lines {
-		rev[i] = reverse(lines[i])
+	patterns := [][]string{
+		{"M.M", ".A.", "S.S"},
+		{"M.S", ".A.", "M.S"},
+		{"S.M", ".A.", "S.M"},
+		{"S.S", ".A.", "M.M"},
 	}
-	// y-flipped
-	upward := make([]string, m)
-	for j := range lines[0] {
-		for i := range lines {
-			upward[j] += string(lines[i][m-1-j])
+
+	blockMatch := func(i, j int, pattern []string) int {
+		if i+2 >= len(lines) || j+2 >= len(lines[0]) { // bounds check
+			return 0
 		}
-	}
-	// y-flipped and reverse
-	upwardRev := make([]string, m)
-	for i := range upward {
-		upwardRev[i] = reverse(upward[i])
-	}
-
-	match := func(ss []string) int {
-		var count int
-		for i := 0; i < m-2; i++ {
-			for j := 0; j < n-2; j++ {
-				if ss[i][j] == 'M' &&
-					ss[i][j+2] == 'S' &&
-					ss[i+1][j+1] == 'A' &&
-					ss[i+2][j] == 'M' &&
-					ss[i+2][j+2] == 'S' {
-					count++
+		for di := 0; di < 3; di++ {
+			for dj := 0; dj < 3; dj++ {
+				want := pattern[di][dj]
+				if want == '.' {
+					continue
+				}
+				if lines[i+di][j+dj] != want {
+					return 0
 				}
 			}
 		}
-		return count
+		return 1
 	}
-	var res int
-	res += match(lines)
-	res += match(rev)
-	res += match(upward)
-	res += match(upwardRev)
-	return res
+
+	var result int
+	for i := range lines {
+		for j := range lines[i] {
+			for _, pattern := range patterns {
+				result += blockMatch(i, j, pattern)
+			}
+		}
+	}
+	return result
 }
 
 func main() {
