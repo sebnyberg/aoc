@@ -47,3 +47,37 @@ func SliceToMapSet[S ~[]T, T comparable](a S) map[T]struct{} {
 	}
 	return m
 }
+
+// Reverse reverses a slice, returning a copy
+func Reverse[T any](a []T) []T {
+	cpy := make([]T, len(a))
+	copy(cpy, a)
+	ReverseInplace(cpy)
+	return cpy
+}
+
+// ReverseInPlace reverses a slice in-place
+func ReverseInplace[T any](a []T) {
+	for l, r := 0, len(a)-1; l < r; l, r = l+1, r-1 {
+		a[l], a[r] = a[r], a[l]
+	}
+}
+
+// ReverseRows reverses the rows of a 2D slice, returning a copy
+func ReverseRows[T any](a [][]T) [][]T {
+	cpy := make([][]T, len(a))
+	for i := range cpy {
+		cpy[i] = make([]T, len(a[i]))
+		copy(cpy[i], a[i])
+	}
+	a = cpy
+	ReverseRowsInplace(a)
+	return cpy
+}
+
+// ReverseRows reverses the rows of a 2D slice
+func ReverseRowsInplace[T any](a [][]T) {
+	for l, r := 0, len(a)-1; l < r; l, r = l+1, r-1 {
+		a[l], a[r] = a[r], a[l]
+	}
+}
