@@ -36,14 +36,6 @@ func solve1(inf string) any {
 	return result
 }
 
-func intpow(x, y int) int {
-	res := 1
-	for i := 0; i < y; i++ {
-		res *= x
-	}
-	return res
-}
-
 func solve2(inf string) any {
 	lines := ax.MustReadFileLines(inf)
 	var result int
@@ -55,7 +47,7 @@ func solve2(inf string) any {
 			nums = append(nums, ax.Atoi(x))
 		}
 		numOps := len(nums) - 1
-		for perm := 0; perm < intpow(3, numOps); perm++ {
+		for perm := 0; perm < ax.Pow(3, numOps); perm++ {
 			cpy := perm
 			got := nums[0]
 			for i := 0; i < numOps; i++ {
